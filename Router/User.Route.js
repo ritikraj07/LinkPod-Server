@@ -1,70 +1,56 @@
 const { Router } = require("express")
-const { createUser, updateUser, getUserById, searchUser } = require("../Controller/User.Controller")
-
+const { generateAccessToken, generateRefreshToken } = require("../Controller/Token.Controller");
+const { CreateUser, LoginUser } = require("../Controller/User.Controller");
 const userRouter = Router()
 
-userRouter.post('/', async (req, res) => {
-    let body = req.body
-    console.log(body)
-    let user = await createUser({ body })
-    res.send({
-        responce: user
-    })
+
+
+/*****************************************POST REQUESTS***********************************************/
+
+
+userRouter.post('/create-account', async (req, res) => {
+    let { email, password } = req.body;
+    let response = await CreateUser({ email, password })
+    const token = generateAccessToken({user_id:response.data._id})
+
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true, // Enable this if your application uses HTTPS
+        sameSite: 'strict' // Adjust as needed for your application's requirements
+    });
+
+    res.send(response)
 })
 
 
-userRouter.patch('/id/:id', async (req, res) => {
-    let id = req.params.id
-    let body = req.body
-    let user = await updateUser({ id, body })
+userRouter.post('/login', async (req, res) => {
 
-    return res.send({
-        responce: user
-    })
+    let { email, password } = req.body;
+
+    let response = await LoginUser({email, password})
+
+    // Perform authentication and generate a token
+    const token = generateAccessToken(response.data._id) // pass user id
+    
+
+    // Set the token in an HTTP-only cookie
+    res.cookie('token', token, {
+        httpOnly: true,
+        secure: true, // Enable this if your application uses HTTPS
+        sameSite: 'strict' // Adjust as needed for your application's requirements
+    });
+
+    res.send('Login successful');
+});
+
+
+/*****************************************GET REQUESTS***********************************************/
+
+userRouter.get('/token', async (req, res) => {
+    
 })
 
-userRouter.get('/id/:id', async (req, res) => {
-    let _id = req.params.id
-    let user = await getUserById(_id)
-    return res.send({
-        responce: user
-    })
-})
-
-userRouter.get('/search', async (req, res) => {
-    let { high_age, low_age, gender,
-        breed, original, Latitude,
-        Longitude, maxDistance } = req.query
-    
-    console.log(high_age, low_age, gender,
-        breed, original, Latitude,
-        Longitude, maxDistance)
-    
-    let user = await searchUser({
-        high_age, low_age, gender,
-        breed, original, Latitude,
-        Longitude, maxDistance
-    })
-    
-    return res.send({
-        response: user
-    })
-} )
+userRouter.get('/id/:id', async (req, res) => {})
 
 module.exports = userRouter
 
-
-
-// {
-//     "responce": {
-//         "petName": "King",
-//             "ownerName": "Ritik",
-//                 "age": 12,
-//                     "email": "king@gmail.com",
-//                         "password": "2435234",
-//                             "_id": "6523fc50ee11828d8ac1bab1",
-//                                 "createdAt": "2023-10-09T13:12:48.613Z",
-//                                     "updatedAt": "2023-10-09T13:12:48.613Z",
-//                                         "__v": 0
-//     }
-// }

@@ -1,62 +1,87 @@
+const bcrypt = require('bcrypt');
 const User = require("../Model/User.Model");
+const { generateRefreshToken } = require('./Token.Controller');
 
+const CreateUser = async ({ email, password }) => {
+    try {
+        // Check if the email already exists
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            throw new Error('Email already exists');
+        }
 
-async function createUser({ body }) {
-    const user = await User.create(body)
-    return user
-}
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Create user with hashed password
+        const user = await User.create({ email, password: hashedPassword });
 
-async function updateUser({ id, body }) {
-    const user = await User.findByIdAndUpdate(id, body, { new: true })
-    return user
-}
+        // Remove the hashed password from the returned user object
+        const { password: _, ...userData } = user.toObject();
 
-async function getUserById(id) {
-    return await User.findById(id)
-}
+        const r_token = generateRefreshToken({ user_id: user._id });
 
-const geolib = require('geolib'); // You may need to install this library
-
-async function searchUser({ high_age = 60, low_age = 1, gender = "", breed = "", original = false, Latitude = "", Longitude = "", maxDistance = 100 }) {
-    // Create a filter object to build the query
-    const filter = {};
-
-    // Apply filters based on the provided parameters
-    if (high_age) {
-        filter.age = { $lte: high_age };
-    }
-    if (low_age) {
-        filter.age = { ...filter.age, $gte: low_age };
-    }
-    if (gender) {
-        filter.gender = gender;
-    }
-    if (breed) {
-        filter.breed = breed;
-    }
-    if (original) {
-        filter.original = original;
-    }
-
-    // If Latitude and Longitude are provided, calculate distance
-    if (Latitude && Longitude) {
-        filter.location = {
-            $geoWithin: {
-                $centerSphere: [
-                    [parseFloat(Longitude), parseFloat(Latitude)],
-                    maxDistance / 6371 // Convert maxDistance from kilometers to radians
-                ]
-            }
+        return {
+            status: true,
+            data: { ...userData, r_token },
+            message: 'Account created 🎉'
+        };
+    } catch (error) {
+        return {
+            status: false,
+            data: error.message,
+            message: 'Error creating account'
         };
     }
-
-    // Use the filter to find matching users and sort them as needed
-    const users = await User.find(filter).sort({ age: 1 /* or -1 for descending */ });
-
-    return users;
-}
+};
 
 
 
-module.exports = { createUser, updateUser, getUserById, searchUser }
+
+const LoginUser = async ({ email, password }) => {
+    try {
+        // Find the user with the provided email
+        const user = await User.findOne({ email });
+
+        // If user does not exist, return error
+        if (!user) {
+            return {
+                status: false,
+                data: null,
+                message: 'No User Found! 😒'
+            };
+        }
+
+        // Compare the provided password with the hashed password stored in the database
+        const passwordMatch = bcrypt.compare(password, user.password);
+
+        // If passwords do not match, return error
+        if (!passwordMatch) {
+            return {
+                status: false,
+                data: null,
+                message: 'Password Not Match! 😒'
+            };
+        }
+
+        
+        const refreshToken = generateRefreshToken({ userId: user._id });
+
+        return {
+            status: true,
+            data: {
+                r_token: refreshToken,
+                user
+            },
+            message: 'Login successful'
+        };
+    } catch (error) {
+        return {
+            status: false,
+            data: error,
+            message: 'Something went wrong'
+        };
+    }
+};
+
+module.exports = { CreateUser, LoginUser };

@@ -1,27 +1,35 @@
 const { Schema, model } = require('mongoose')
 
 const UserSchema = new Schema({
-    petName: String,
     email: {
         require: true,
-        type: String
+        type: String,
+        unique: true,
     },
     password: {
         require: true,
         type: String
     },
-    age: Number,
-    gender: String,
-    breed: String,
-    original: Boolean,
-    location: {
-        Latitude: String,
-        Longitude: String
+    linkedIn_id: String,
+    linkedIn_access_token: {
+        token: {
+            type: String,
+            
+        },
+        expireTime: {
+            type: String,
+            
+        },
+        expireDate: {
+            type: String,
+            
+        },
     },
-    purpose: String,
-    image: String,
-    ownerName: String
-})
+},
+    {
+        timestamps: true,
+    }
+)
 
 const User = model('User', UserSchema)
 module.exports = User
