@@ -10,13 +10,13 @@ const generateAccessToken = (payload) => {
         throw new Error('Payload is required for generating access token');
     }
 
-    return jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '1d' });
+    return jwt.sign(payload, secret, { algorithm: 'HS256', expiresIn: '30d' });
 };
 
 
 const generateRefreshToken = (payload) => {
     console.log('===payload rt', payload)
-    return jwt.sign(payload, secret, { algorithm: 'HS256',expiresIn: '7d',});
+    return jwt.sign(payload, secret, { algorithm: 'HS256',expiresIn: '60d',});
 };
 
 const verifyToken = (token) => {
@@ -52,6 +52,8 @@ function isTokenExpiringSoon(token, thresholdInDays = 1) {
     // Check if token is expiring within the threshold
     return expiresIn <= thresholdInSeconds;
 }
+
+
 
 module.exports = {
     generateAccessToken,

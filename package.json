@@ -4,7 +4,8 @@
   "description": "Extension for linkedIn, help user to make post, comment, like",
   "main": "api.js",
   "scripts": {
-    "test": "test.js"
+    "test": "test.js",
+    "start": "nodemon -r dotenv/config api.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
     "mongoose-paginate-v2": "^1.8.0",
     "mongoosh": "^0.0.7",
     "morgan": "^1.10.0",
+    "querystring": "^0.2.1",
     "serverless-http": "^3.2.0"
   }
 }

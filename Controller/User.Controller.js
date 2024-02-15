@@ -64,7 +64,7 @@ const LoginUser = async ({ email, password }) => {
             };
         }
 
-        
+
         const refreshToken = generateRefreshToken({ userId: user._id });
 
         return {
@@ -84,4 +84,10 @@ const LoginUser = async ({ email, password }) => {
     }
 };
 
-module.exports = { CreateUser, LoginUser };
+
+
+
+const SetLinkdedCredentials = async ({ access_token, expires_in, scope, iat, exp, sub, name, picture, email, locale }) => {
+
+}
+module.exports = { CreateUser, LoginUser, };

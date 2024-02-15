@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Link Pod API Documentation</title>
+    <link rel="stylesheet" href="./index.css" />
+  </head>
+  <body>
+    <div class="title">
+      <h1>Link Pod API Documentation</h1>
+    </div>
+
+    <!-- user section -->
+    <section id="user_section">
+      <h3>User</h3>
+      <!-- user register section -->
+      <details class="api-section">
+        <summary class="api-summary">Register User</summary>
+        <div class="api-details">
+          <p>Registers a new user with the system.</p>
+          <p><b>Method:</b> POST</p>
+          <p><b>Route:</b> /user/create-user</p>
+          <details class="api-sub-details">
+            <summary class="api-sub-summary">Required Body:</summary>
+            <div class="api-sub-body">
+              <ul>
+                <li>email</li>
+                <li>password</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="api-response">
+          <details class="api-response-details">
+            <summary class="api-response-summary">Success Response</summary>
+            <div class="api-response-success">
+              <ul>
+                <li><b>status:</b> true</li>
+                <li class="api-data">
+                  <details>
+                    <summary>data</summary>
+                    <ul>
+                      <li type="circle">email</li>
+                      <li>_id</li>
+                      <li>createdAt</li>
+                      <li>updatedAt</li>
+                    </ul>
+                  </details>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="api-response-details">
+            <summary class="api-response-summary">Fail Response</summary>
+            <div class="api-response-fail">
+              <ul>
+                <li><b>status:</b> false</li>
+                <li><b>data:</b> error</li>
+                <li><b>message:</b> "Server Error"</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+
+      <!-- user login section -->
+      <details class="api-section">
+        <summary class="api-summary">Login User</summary>
+        <div class="api-details">
+          <p>Login user.</p>
+          <p><b>Method:</b> POST</p>
+          <p><b>Route:</b> /user/login</p>
+          <details class="api-sub-details">
+            <summary class="api-sub-summary">Required Body:</summary>
+            <div class="api-sub-body">
+              <ul>
+                <li>email</li>
+                <li>password</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="api-response">
+          <details class="api-response-details">
+            <summary class="api-response-summary">Success Response</summary>
+            <div class="api-response-success">
+              <ul>
+                <li><b>status:</b> true</li>
+                <li class="api-data">
+                  <details>
+                    <summary>data:</summary>
+                    <ul>
+                      <li>email</li>
+                      <li>_id</li>
+                      <li>createdAt</li>
+                      <li>updatedAt</li>
+                      <li>name</li>
+                      <li>picture</li>
+                    </ul>
+                  </details>
+                </li>
+                <li><b>message:</b>Success</li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="api-response-details">
+            <summary class="api-response-summary">Fail Response</summary>
+            <div class="api-response-fail">
+              <ul>
+                <li><b>status:</b> false</li>
+                <li><b>data:</b> error</li>
+                <li><b>message:</b> "Server Error"</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+
+      <!-- user logout section -->
+      <details class="api-section">
+        <summary class="api-summary">Logout User</summary>
+        <div class="api-details">
+          <p>Logs out the currently logged-in user.</p>
+          <p><b>Method:</b> GET</p>
+          <p><b>Route:</b> /user/logout</p>
+          <p>No body required.</p>
+        </div>
+      </details>
+
+      <!-- user linkedIn connection -->
+      <details class="api-section">
+        <summary class="api-summary">Register With LinkedIn</summary>
+        <div class="api-details">
+          <p>Registers a new user with LinkedIn authentication.</p>
+          <p><b>Method:</b> POST</p>
+          <p><b>Route:</b> /user/linkedIn/authorize</p>
+          <details class="api-sub-details">
+            <summary class="api-sub-summary">Required Body:</summary>
+            <div class="api-sub-body">
+              <ul>
+                <li>email</li>
+                <li>password</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+    </section>
+
+    <!-- pod section -->
+
+    <!-- Move script tag to the end of the body for better performance -->
+    <script src="./index.js"></script>
+  </body>
+</html>

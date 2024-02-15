@@ -1,0 +1,82 @@
+* {
+  margin: 0px;
+  padding: 0px;
+}
+
+body {
+  margin: 20px;
+}
+
+.title {
+  text-align: center;
+  color: rebeccapurple;
+}
+
+section {
+  background-color: rgba(241, 209, 170, 0.544);
+  padding: 10px 20px;
+  border-radius: 5px;
+  margin: 50px 20px;
+}
+details {
+  margin: 10px;
+}
+
+summary {
+  font-weight: bold;
+  color: darkblue;
+  cursor: pointer;
+}
+
+details > div {
+  margin: 10px 20px;
+}
+
+.api-section {
+  margin-bottom: 20px;
+}
+
+.api-summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.api-details {
+  margin-left: 20px;
+}
+
+.api-sub-details {
+  margin-left: 20px;
+}
+
+.api-sub-summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.api-sub-body {
+  margin-left: 20px;
+}
+
+.api-response {
+  margin-left: 20px;
+}
+
+.api-response-details {
+  margin-left: 20px;
+}
+
+.api-response-summary {
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.api-response-success {
+  margin-left: 20px;
+  color: green;
+}
+
+.api-response-fail {
+  margin-left: 20px;
+  color: red;
+}
