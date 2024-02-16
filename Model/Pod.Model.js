@@ -7,17 +7,16 @@ const PodSchema = new Schema({
         required: true,
     },
     description: String,
-    member_id: String,
+    member_id: [String],
+    admin_id: {
+        type: String,
+        required: true
+    },
     admin_name: {
-        id: {
-            type: String,
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
-        }
+        type: String,
+        required: true
     }
+
 },
     {
         timestamps: true,

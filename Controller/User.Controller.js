@@ -88,6 +88,10 @@ const LoginUser = async ({ email, password }) => {
 
 
 const SetLinkdedCredentials = async ({ access_token, expires_in, scope, iat, exp, sub, name, picture, email, locale }) => {
-
+    try {
+        
+    } catch (error) {
+        
+    }
 }
 module.exports = { CreateUser, LoginUser, };

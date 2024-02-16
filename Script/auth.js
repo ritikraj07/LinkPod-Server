@@ -1,20 +1,16 @@
 let qs = require('querystring')
 let axios = require('axios')
-
-let client_id = process.env.CLIENT_ID
-let r_uri = process.env.REDIRECT_URI
-let scope = process.env.SCOPE
-let client_secret = process.env.CLIENT_SECRET
+const config = require('../Config')
 
 const Auth = (_id) => {
-    return encodeURI(`https://www.linkedin.com/oauth/v2/authorization?client_id=${client_id}&response_type=code&redirect_uri=${r_uri}&scope=${scope}`)
+    return encodeURI(`https://www.linkedin.com/oauth/v2/authorization?client_id=${config.CLIENT_ID}&response_type=code&redirect_uri=${config.REDIRECT_URI}&scope=${config.REDIRECT_URI}`)
 }
 
 const Redirect = async (code) => {
     const payload = {
-        client_id: client_id,
-        client_secret: client_secret,
-        redirect_uri: r_uri,
+        client_id: config.CLIENT_ID,
+        client_secret: config.CLIENT_SECRET,
+        redirect_uri: config.REDIRECT_URI,
         grant_type: 'authorization_code',
         code: code
     };

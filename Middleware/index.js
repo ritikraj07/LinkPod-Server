@@ -17,7 +17,7 @@ const VerifyUser = async (req, res, next) => {
             req._id = isValid.payload.user_id;
             req.isTokenExpiring = isValid.payload.isTokenExpiringSoon;
             next()
-            
+
         } else {
             res.send({
                 status: false,
@@ -25,13 +25,15 @@ const VerifyUser = async (req, res, next) => {
             })
         }
     } catch (error) {
-        res.send({
+        res.status(500).send({
             status: false,
             message: 'Server or Verification Error!',
-        })
+            error: error.message // Optionally, include the error message
+        });
+
+    }
+
 }
 
-    
-}
 
-module.exports = {VerifyUser}
+module.exports = { VerifyUser }

@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken');
 const config = require('../Config');
 const secret = config.JWT_SECRET_KEY
 
-const activeSessions = new Map();
 
 const generateAccessToken = (payload) => {
     // If payload is not provided, throw an error
@@ -15,7 +14,6 @@ const generateAccessToken = (payload) => {
 
 
 const generateRefreshToken = (payload) => {
-    console.log('===payload rt', payload)
     return jwt.sign(payload, secret, { algorithm: 'HS256',expiresIn: '60d',});
 };
 
@@ -30,8 +28,10 @@ const verifyToken = (token) => {
     } catch (error) {
         return {
             valid: false,
-            error: 'Token invalid or expired'
+            message: 'Token invalid or expired',
+            data: error.message // Include the actual error message
         };
+
     }
 };
 
