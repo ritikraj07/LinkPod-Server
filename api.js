@@ -15,6 +15,13 @@ app.use(morgan('tiny'))
 app.use(express.static('Static'));
 
 app.get('/', (req, res) => {
+    res.send(`<div style="margin: auto" >
+        <h1> Welcome to Linkpod </h1>
+        <p> click here to <a href="/index"> read </a> documents </p>
+    </div>`)
+})
+
+app.get('/index', (req, res) => {
     res.sendFile('index.html', { root: 'Static' });
 })
 
