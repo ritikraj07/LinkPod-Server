@@ -2,9 +2,11 @@ let qs = require('querystring')
 let axios = require('axios')
 const config = require('../Config')
 
-const Auth = (_id) => {
-    return encodeURI(`https://www.linkedin.com/oauth/v2/authorization?client_id=${config.CLIENT_ID}&response_type=code&redirect_uri=${config.REDIRECT_URI}&scope=${config.REDIRECT_URI}`)
+const Auth = (email) => {
+    const redirectUri = encodeURI(`${config.REDIRECT_URI}?email_id=${email}`);
+    return encodeURI(`https://www.linkedin.com/oauth/v2/authorization?client_id=${config.CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}&scope=${config.SCOPE}`);
 }
+
 
 const Redirect = async (code) => {
     const payload = {
@@ -25,7 +27,6 @@ const Redirect = async (code) => {
             data: qs.stringify(payload)
         });
 
-        console.log('res=>', response.data);
         return {
             data: response.data,
             status: true

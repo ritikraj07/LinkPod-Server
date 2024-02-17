@@ -50,25 +50,36 @@ userRouter.post('/login', async (req, res) => {
 /*****************************************GET REQUESTS***********************************************/
 
 
-userRouter.get('/linkedIn/authorize', async (req, res) => {
-    return res.redirect(Auth());
+userRouter.get('/linkedin/authorize', async (req, res) => {
+    let { email, password } = req.query
+
+    return res.redirect(Auth(email));
+    // let response = await CreateUser({ email, password })
+    // console.log('reponse', response)
+    // if (response.status) {
+    // } else {
+    //     res.send(response)
+    // }
+
 })
 
-userRouter.get('linkedin/redirect', async (req, res) => {
-    let { status, data, message } = await Redirect(req.query.code)
+userRouter.get('/linkedin/redirect', async (req, res) => {
+    let { code, email_id } = req?.query
+    console.log("email", email_id)
+    let { status, data } = await Redirect(code)
     if (status) {
+        console.log(status, data, '====== linkedIN redirect')
         let { access_token, expires_in, scope, id_token } = data;
-        let {iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token)
-        
+        let { iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token)
 
+        res.send({ data: { iat, exp, sub, name, picture, email, locale },
+        data1: { access_token, expires_in, scope, id_token } })
     } else {
-        res.status(400).send({ status, data, message })
+        res.status(400).send({ status, data })
     }
 })
 
-userRouter.get('/get-user-data-form-linked', async (req, res) => {
-
-})
+userRouter.get('/get-user-data-form-linked', async (req, res) => { })
 
 userRouter.get('/token', async (req, res) => {
 })

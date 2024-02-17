@@ -5,6 +5,7 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser')
 const ConnectDatabase = require('./DB');
 const userRouter = require('./Router/User.Router');
+const PodRouter = require('./Router/Pod.Router');
 
 
 const app = express()
@@ -21,13 +22,13 @@ app.get('/', (req, res) => {
     </div>`)
 })
 
-app.get('/index', (req, res) => {
+app.get('/docs', (req, res) => {
     res.sendFile('index.html', { root: 'Static' });
 })
 
 
 app.use('/user', userRouter);
-
+app.use('/pod', PodRouter);
 
 
 ConnectDatabase()
