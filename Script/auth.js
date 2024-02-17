@@ -2,9 +2,10 @@ let qs = require('querystring')
 let axios = require('axios')
 const config = require('../Config')
 
-const Auth = (email) => {
-    const redirectUri = encodeURI(`${config.REDIRECT_URI}?email_id=${email}`);
-    return encodeURI(`https://www.linkedin.com/oauth/v2/authorization?client_id=${config.CLIENT_ID}&response_type=code&redirect_uri=${redirectUri}&scope=${config.SCOPE}`);
+const Auth = (userData) => {
+    const userDataString = JSON.stringify(userData);
+    const encodedUserData = encodeURIComponent(userDataString);
+    return encodeURI(`https://www.linkedin.com/oauth/v2/authorization?client_id=${config.CLIENT_ID}&response_type=code&redirect_uri=${config.REDIRECT_URI}&scope=${config.SCOPE}&state=${encodedUserData}`);
 }
 
 

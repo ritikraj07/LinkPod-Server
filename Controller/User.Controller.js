@@ -2,10 +2,13 @@ const bcrypt = require('bcrypt');
 const User = require("../Model/User.Model");
 const { generateRefreshToken } = require('./Token.Controller');
 
-const CreateUser = async ({ email, password }) => {
+const CreateUser = async ({
+    email_id, email, password, iat, exp, sub, name,
+    picture, locale, access_token, expires_in,
+}) => {
     try {
         // Check if the email already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ email_id });
         if (existingUser) {
             throw new Error('Email already exists');
         }
@@ -14,23 +17,27 @@ const CreateUser = async ({ email, password }) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create user with hashed password
-        const user = await User.create({ email, password: hashedPassword });
+        const user = await User.create({
+            email: email_id, password: hashedPassword,
+            name, userURN: sub, picture, linkedIn_access_token: access_token, 
+            linkedIn_access_token_expires_in: expires_in,
+            linkedIn_email: email,
+        
+        });
 
         // Remove the hashed password from the returned user object
         const { password: _, ...userData } = user.toObject();
 
-        const r_token = generateRefreshToken({ user_id: user._id });
-
         return {
             status: true,
-            data: { ...userData, r_token },
+            data: userData,
             message: 'Account created 🎉'
         };
     } catch (error) {
         return {
             status: false,
             data: error.message,
-            message: 'Error creating account'
+            message: 'Error in creating account'
         };
     }
 };
@@ -87,11 +94,5 @@ const LoginUser = async ({ email, password }) => {
 
 
 
-const SetLinkdedCredentials = async ({ access_token, expires_in, scope, iat, exp, sub, name, picture, email, locale }) => {
-    try {
-        
-    } catch (error) {
-        
-    }
-}
+
 module.exports = { CreateUser, LoginUser, };
