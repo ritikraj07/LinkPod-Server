@@ -1,5 +1,5 @@
 const { Router } = require("express")
-const { generateAccessToken, generateRefreshToken } = require("../Controller/Token.Controller");
+const { generateAccessToken } = require("../Controller/Token.Controller");
 const { CreateUser, LoginUser } = require("../Controller/User.Controller");
 const { Auth, Redirect } = require("../Script/auth");
 const jwt = require('jsonwebtoken')
@@ -12,16 +12,6 @@ const userRouter = Router()
 
 
 userRouter.post('/create-account', async (req, res) => {
-    res.cookie('token', token, {
-        httpOnly: true,
-        secure: true, // Enable this if your application uses HTTPS
-        sameSite: 'strict' // Adjust as needed for your application's requirements
-    });
-
-    res.send(response)
-})
-
-userRouter.post('/create-account', async (req, res) => {
     let { email, password } = req.body
     let email_id = email
     return res.redirect(Auth({ email_id, password }));
@@ -29,6 +19,7 @@ userRouter.post('/create-account', async (req, res) => {
 
 
 userRouter.post('/login', async (req, res) => {
+
 
     let { email, password } = req.body;
 
@@ -45,7 +36,7 @@ userRouter.post('/login', async (req, res) => {
         sameSite: 'strict' // Adjust as needed for your application's requirements
     });
 
-    res.send('Login successful');
+    res.send(response);
 });
 
 
@@ -65,19 +56,12 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
         let { access_token, expires_in, scope, id_token } = data;
         let { iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token)
 
-        let user = await CreateUser({
+        await CreateUser({
             email_id, email, password, iat, exp, sub, name,
             picture, locale, access_token, expires_in,
         })
 
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'strict'
-        });
-
-        res.send(user)  
-        res.redirect('')
+        res.redirect('/login')
 
     } else {
         res.status(400).send({ status, data })
@@ -86,7 +70,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
 
 userRouter.get('/get-user-data-form-linked', async (req, res) => { })
 
-userRouter.get('/token/:token', async (req, res) => {    
+userRouter.get('/token/:token', async (req, res) => {
 })
 
 userRouter.get('/id/:id', async (req, res) => { })
