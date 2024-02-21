@@ -23,13 +23,13 @@ app.get('/', (req, res) => {
     </div>`)
 })
 
-app.get('/api/docs', (req, res) => {
+app.get('/docs', (req, res) => {
     res.sendFile('index.html', { root: 'Static' });
 })
 
 
-app.use('/api/user', userRouter);
-app.use('/api/pod', PodRouter);
+app.use('/user', userRouter);
+app.use('/pod', PodRouter);
 
 
 ConnectDatabase()

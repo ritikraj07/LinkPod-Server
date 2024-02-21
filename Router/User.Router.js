@@ -65,13 +65,13 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             res.send(response)
             return;
         }
-        
+
 
         const token = generateAccessToken({ user_id: response.data._id })
 
         // Set the token in an HTTP-only cookie
         res.cookie('token', token, {
-            httpOnly: true,
+            // httpOnly: true,
             secure: true, // Enable this if your application uses HTTPS
             sameSite: 'strict' // Adjust as needed for your application's requirements
         });
@@ -82,16 +82,36 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             sameSite: 'strict' // Adjust as needed for your application's requirements
         });
 
-        res.redirect('/login');
-
-        res.redirect('/login')
+        res.redirect('http://localhost:3000/');
 
     } else {
         res.status(400).send({ status, data })
     }
 })
 
-userRouter.get('/get-user-data-form-linked', async (req, res) => { })
+userRouter.get('/get-user-data-form-linked', async (req, res) => {
+    res.cookie('isLogin', true, {
+        secure: true, // Enable this if your application uses HTTPS
+        sameSite: 'strict' // Adjust as needed for your application's requirements
+    });
+
+    const token = "akshfwnsaf";
+
+    res.cookie('token', token, {
+        // httpOnly: true,
+        secure: true, // Enable this if your application uses HTTPS
+        sameSite: 'strict' // Adjust as needed for your application's requirements
+    });
+
+    res.send("ok")
+})
+
+userRouter.get('/logout', async (req, res) => {
+    res.clearCookie('token');
+    res.clearCookie('isLogin');
+    res.send("logout succefully")
+
+})
 
 userRouter.get('/token/:token', async (req, res) => {
 })
@@ -100,3 +120,14 @@ userRouter.get('/id/:id', async (req, res) => { })
 
 module.exports = userRouter
 
+/**
+ * const cookies = document.cookie.split(';').reduce((acc, cookie) => {
+    const [name, value] = cookie.trim().split('=');
+    acc[name] = value;
+    return acc;
+}, {});
+
+console.log(cookies);
+ * 
+ * 
+ */
