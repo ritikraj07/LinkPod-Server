@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config({ path: './env' })
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
@@ -10,8 +10,9 @@ const PodRouter = require('./Router/Pod.Router');
 
 const app = express()
 app.use(cookieParser());
-app.use(express.json());
-app.use(cors())
+app.use(express.json({ limit: "16kb" }));
+app.use(express.urlencoded({ extended: true, limit: "16kb" }))
+app.use(cors({ origin: process.env.CORS_ORIGIN }))
 app.use(morgan('tiny'))
 app.use(express.static('Static'));
 
@@ -22,13 +23,13 @@ app.get('/', (req, res) => {
     </div>`)
 })
 
-app.get('/docs', (req, res) => {
+app.get('/api/docs', (req, res) => {
     res.sendFile('index.html', { root: 'Static' });
 })
 
 
-app.use('/user', userRouter);
-app.use('/pod', PodRouter);
+app.use('/api/user', userRouter);
+app.use('/api/pod', PodRouter);
 
 
 ConnectDatabase()

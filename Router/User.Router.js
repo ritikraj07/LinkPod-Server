@@ -56,10 +56,33 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
         let { access_token, expires_in, scope, id_token } = data;
         let { iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token)
 
-        await CreateUser({
+        let response = await CreateUser({
             email_id, email, password, iat, exp, sub, name,
             picture, locale, access_token, expires_in,
         })
+
+        if (response.status === false) {
+            res.send(response)
+            return;
+        }
+        
+
+        const token = generateAccessToken({ user_id: response.data._id })
+
+        // Set the token in an HTTP-only cookie
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: true, // Enable this if your application uses HTTPS
+            sameSite: 'strict' // Adjust as needed for your application's requirements
+        });
+
+        // Set the login state in a separate cookie
+        res.cookie('isLogin', true, {
+            secure: true, // Enable this if your application uses HTTPS
+            sameSite: 'strict' // Adjust as needed for your application's requirements
+        });
+
+        res.redirect('/login');
 
         res.redirect('/login')
 

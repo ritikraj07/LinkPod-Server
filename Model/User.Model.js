@@ -19,9 +19,13 @@ const UserSchema = new Schema({
         required: true
     },
     linkedIn_access_token_expires_in: {
-        type: String, // No need to specify type again
+        type: String, 
         required: true
     },
+    isLogin: {
+        type: Boolean,
+        required: true,
+    }
 }, {
     timestamps: true,
 });
