@@ -12,10 +12,11 @@ const userRouter = Router()
 /*****************************************POST REQUESTS***********************************************/
 
 
-userRouter.post('/create-account', async (req, res) => {
+userRouter.get('/create-account', async (req, res) => {
     let { email, password } = req.body
     let email_id = email
-    return res.send(Auth({ email_id, password }));
+    
+    return res.redirect(Auth({ email_id, password }));
 })
 
 
@@ -47,59 +48,48 @@ userRouter.post('/login', async (req, res) => {
 
 
 userRouter.get('/linkedin/redirect', async (req, res) => {
-    let { code, state } = req?.query
-    const decodedState = decodeURIComponent(state);
-    const userData = JSON.parse(decodedState);
-    const { email_id, password } = userData;
-    let { status, data } = await Redirect(code)
+    try {
+        const { code, state } = req?.query;
+        const decodedState = decodeURIComponent(state);
+        const userData = JSON.parse(decodedState);
+        const { email_id, password } = userData;
 
-    
-    if (status) {
+        const { status, data } = await Redirect(code);
+        console.log(status, data, '====== LinkedIn redirect');
 
-        let { access_token, expires_in, scope, id_token } = data;
-        let { iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token)
+        if (status) {
+            const { access_token, expires_in, scope, id_token } = data;
+            const { iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token);
 
-        let response = await CreateUser({
-            email_id, email, password, iat, exp, sub, name,
-            picture, locale, access_token, expires_in,
-        })
-        
-        if (response.status === false) {
-            //user has already been created
-            response = JSON.stringify(response)
-            response = encodeURIComponent(response)
-            res.redirect(encodeURI(`${config.FRONTEND_URL}/login-failed?error=${response}`));
-            return;
+            let response = await CreateUser({
+                email_id, email, password, iat, exp, sub, name,
+                picture, locale, access_token, expires_in,
+            });
+
+            if (response.status === false) {
+                // !User has already been created
+                const errorData = encodeURIComponent(JSON.stringify(response));
+                return res.redirect(`${config.FRONTEND_URL}/login-failed?error=${errorData}`);
+            }
+            console.log('response', response)
+            const token = generateAccessToken({ user_id: response.data._id });
+
+            res.cookie('token', token, { sameSite: 'strict', secure: true });
+            res.cookie('isLogin', true, { sameSite: 'strict', secure: true });
+
+            res.redirect(config.FRONTEND_URL + '/dashboard?isLogin=true')
+
+        } else {
+            console.log('else block', status, data);
+            // Some error
+            const errorData = encodeURIComponent(JSON.stringify({ status, data }));
+            return res.redirect(`${config.FRONTEND_URL}/login-failed?error=${errorData}`);
         }
-
-
-        const token = generateAccessToken({ user_id: response.data._id })
-
-        // Set the token in an HTTP-only cookie
-        res.cookie('token', token, {
-            // httpOnly: true,
-            secure: true, // Enable this if your application uses HTTPS
-            sameSite: 'strict' // Adjust as needed for your application's requirements
-        });
-
-        // Set the login state in a separate cookie
-        res.cookie('isLogin', true, {
-            secure: true, // Enable this if your application uses HTTPS
-            sameSite: 'strict' // Adjust as needed for your application's requirements
-        });
-
-        res.redirect(`${config.FRONTEND_URL}/`);
-
-    } else {
-        console.log('else block', status, data)
-        // some error   
-        
-        let response = JSON.stringify({status, data})
-        response = encodeURIComponent(response)
-        res.redirect(encodeURI(`${config.FRONTEND_URL}/login-failed?error=${response}`));
-        return;
+    } catch (error) {
+        console.error('Error in LinkedIn redirect:', error);
+        return res.status(500).send('Internal Server Error');
     }
-})
+});
 
 userRouter.get('/get-user-data-form-linked', async (req, res) => {
     res.cookie('isLogin', true, {
@@ -117,6 +107,7 @@ userRouter.get('/get-user-data-form-linked', async (req, res) => {
 
     res.send("ok")
 })
+
 
 userRouter.get('/logout', async (req, res) => {
     res.clearCookie('token');
@@ -140,6 +131,10 @@ module.exports = userRouter
 }, {});
 
 console.log(cookies);
- * 
+ *    res.cookie('token', token, {
+            // httpOnly: true,
+            // secure: true, // Enable this if your application uses HTTPS
+            sameSite: 'strict' // Adjust as needed for your application's requirements
+        });
  * 
  */
