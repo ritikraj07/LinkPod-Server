@@ -12,7 +12,7 @@ const userRouter = Router()
 /*****************************************POST REQUESTS***********************************************/
 
 
-userRouter.get('/create-account', async (req, res) => {
+userRouter.post('/create-account', async (req, res) => {
     let { email, password } = req.body
     let email_id = email
     
@@ -77,7 +77,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             res.cookie('token', token, { sameSite: 'strict', secure: true });
             res.cookie('isLogin', true, { sameSite: 'strict', secure: true });
 
-            res.redirect(config.FRONTEND_URL + '/dashboard?isLogin=true')
+            res.redirect(config.FRONTEND_URL + '/dashboard')
 
         } else {
             console.log('else block', status, data);
