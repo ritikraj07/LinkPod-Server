@@ -2,7 +2,8 @@ const { Router } = require("express")
 const { generateAccessToken } = require("../Controller/Token.Controller");
 const { CreateUser, LoginUser } = require("../Controller/User.Controller");
 const { Auth, Redirect } = require("../Script/auth");
-const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken');
+const config = require("../Config");
 
 const userRouter = Router()
 
@@ -14,7 +15,7 @@ const userRouter = Router()
 userRouter.post('/create-account', async (req, res) => {
     let { email, password } = req.body
     let email_id = email
-    return res.redirect(Auth({ email_id, password }));
+    return res.send(Auth({ email_id, password }));
 })
 
 
@@ -51,6 +52,8 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
     const userData = JSON.parse(decodedState);
     const { email_id, password } = userData;
     let { status, data } = await Redirect(code)
+
+    
     if (status) {
 
         let { access_token, expires_in, scope, id_token } = data;
@@ -60,9 +63,12 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             email_id, email, password, iat, exp, sub, name,
             picture, locale, access_token, expires_in,
         })
-
+        
         if (response.status === false) {
-            res.send(response)
+            //user has already been created
+            response = JSON.stringify(response)
+            response = encodeURIComponent(response)
+            res.redirect(encodeURI(`${config.FRONTEND_URL}/faild?error=${response}`));
             return;
         }
 
@@ -82,10 +88,16 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             sameSite: 'strict' // Adjust as needed for your application's requirements
         });
 
-        res.redirect('http://localhost:3000/');
+        res.redirect(`${config.FRONTEND_URL}/`);
 
     } else {
-        res.status(400).send({ status, data })
+        console.log('else block', status, data)
+        // some error   
+        
+        let response = JSON.stringify({status, data})
+        response = encodeURIComponent(response)
+        res.redirect(encodeURI(`${config.FRONTEND_URL}/faild?error=${response}`));
+        return;
     }
 })
 

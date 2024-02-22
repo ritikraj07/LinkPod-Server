@@ -9,12 +9,14 @@ const PodRouter = require('./Router/Pod.Router');
 
 
 const app = express()
+app.use(cors())
 app.use(cookieParser());
-app.use(express.json({ limit: "16kb" }));
-app.use(express.urlencoded({ extended: true, limit: "16kb" }))
-app.use(cors({ origin: process.env.CORS_ORIGIN }))
-app.use(morgan('tiny'))
+app.use(express.json());
+// app.use(express.urlencoded({ extended: true, limit: "16kb" }))
+// app.use(morgan('tiny'))
 app.use(express.static('Static'));
+
+
 
 app.get('/', (req, res) => {
     res.send(`<div style="margin: auto" >
@@ -28,8 +30,24 @@ app.get('/docs', (req, res) => {
 })
 
 
-app.use('/user', userRouter);
-app.use('/pod', PodRouter);
+app.use('/api/user', userRouter);
+app.use('/api/pod', PodRouter);
+app.post('/api/test', (req, res) => {
+    res.send([
+        {
+            id: 1,
+            name:'ritik'
+        },
+        {
+            id: 2,
+            name:'ritik'
+        },
+        {
+            id: 3,
+            name:'ritik'
+        }
+    ])
+})
 
 
 ConnectDatabase()

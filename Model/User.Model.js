@@ -22,10 +22,6 @@ const UserSchema = new Schema({
         type: String, 
         required: true
     },
-    isLogin: {
-        type: Boolean,
-        required: true,
-    }
 }, {
     timestamps: true,
 });

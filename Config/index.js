@@ -4,7 +4,9 @@ let config = {
     SCOPE: process.env.SCOPE,
     CLIENT_SECRET: process.env.CLIENT_SECRET,
     CLIENT_ID: process.env.CLIENT_ID,
-    REDIRECT_URI: process.env.REDIRECT_URI
+    REDIRECT_URI: process.env.REDIRECT_URI,
+    FRONTEND_URL: process.env.FRONTEND_URL
 }
+
 
 module.exports = config;
