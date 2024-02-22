@@ -7,8 +7,10 @@ const CreateUser = async ({
     picture, locale, access_token, expires_in,
 }) => {
     try {
+        console.log(email_id, '<====<')
         // Check if the email already exists
-        const existingUser = await User.findOne({ email_id });
+        const existingUser = await User.findOne({ email:email_id });
+        console.log(existingUser, '====<<<<<<<<<<')
         if (existingUser) {
             throw new Error('Email already exists');
         }

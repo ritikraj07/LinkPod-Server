@@ -48,7 +48,7 @@ userRouter.get('/linkedin/authorize', async (req, res) => {
     let { email, password } = req.query
 
     let response = await CreateUser({ email, password })
-    console.log('response', response)
+    // console.log('response', response)
     if (response.status) {
         return res.redirect(Auth(email));
     } else {
@@ -81,10 +81,10 @@ const Auth = (email) => {
 
 userRouter.get('/linkedin/redirect', async (req, res) => {
     let { code, email_id } = req?.query
-    console.log("email", email_id)
+    // console.log("email", email_id)
     let { status, data } = await Redirect(code)
     if (status) {
-        console.log(status, data, '====== LinkedIn redirect')
+        // console.log(status, data, '====== LinkedIn redirect')
         let { access_token, expires_in, scope, id_token } = data;
         let { iat, exp, sub, name, picture, email, locale } = jwt.decode(id_token)
 

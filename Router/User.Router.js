@@ -71,7 +71,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
                 const errorData = encodeURIComponent(JSON.stringify(response));
                 return res.redirect(`${config.FRONTEND_URL}/sign-in?error=${errorData}`);
             }
-            console.log('response', response)
+            // console.log('response', response)
             const token = generateAccessToken({ user_id: response.data._id });
 
             res.cookie('token', token, { sameSite: 'strict', secure: true });
@@ -80,19 +80,20 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             res.redirect(config.FRONTEND_URL + '/dashboard')
 
         } else {
-            console.log('else block', status, data);
+            // console.log('else block', status, data);
             // Some error
             const errorData = encodeURIComponent(JSON.stringify({ status, data }));
             return res.redirect(`${config.FRONTEND_URL}/sign-up?error=${errorData}`);
         }
     } catch (error) {
         console.error('Error in LinkedIn redirect:', error);
+        return res.status(500).json({ error: 'Internal server error' });
         
     }
 });
 
 userRouter.get('/get-user-data-form-linked', async (req, res) => {
-    console.log('++==>', req.cookies)
+    
 
     res.send("ok")
 })

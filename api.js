@@ -32,22 +32,7 @@ app.get('/docs', (req, res) => {
 
 app.use('/api/user', userRouter);
 app.use('/api/pod', PodRouter);
-app.post('/api/test', (req, res) => {
-    res.send([
-        {
-            id: 1,
-            name:'ritik'
-        },
-        {
-            id: 2,
-            name:'ritik'
-        },
-        {
-            id: 3,
-            name:'ritik'
-        }
-    ])
-})
+
 
 
 ConnectDatabase()
