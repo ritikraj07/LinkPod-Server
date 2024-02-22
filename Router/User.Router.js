@@ -68,7 +68,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
             //user has already been created
             response = JSON.stringify(response)
             response = encodeURIComponent(response)
-            res.redirect(encodeURI(`${config.FRONTEND_URL}/faild?error=${response}`));
+            res.redirect(encodeURI(`${config.FRONTEND_URL}/login-failed?error=${response}`));
             return;
         }
 
@@ -96,7 +96,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
         
         let response = JSON.stringify({status, data})
         response = encodeURIComponent(response)
-        res.redirect(encodeURI(`${config.FRONTEND_URL}/faild?error=${response}`));
+        res.redirect(encodeURI(`${config.FRONTEND_URL}/login-failed?error=${response}`));
         return;
     }
 })
