@@ -21,13 +21,13 @@ const verifyToken = (token) => {
     try {
         const decoded = jwt.verify(token, secret);
         return {
-            valid: true,
+            status: true,
             payload: decoded,
             isTokenExpiringSoon: isTokenExpiringSoon(token)
         };
     } catch (error) {
         return {
-            valid: false,
+            status: false,
             message: 'Token invalid or expired',
             data: error.message // Include the actual error message
         };

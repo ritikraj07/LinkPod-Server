@@ -81,6 +81,7 @@ PodRouter.delete('/delete',VerifyUser, async (req, res) => {
     let user_id = req._id;
     let { pod_id } = req.query
     let response = await DeletePod(user_id, pod_id)
+    res.send(response)
 })
 
 

@@ -24,6 +24,7 @@ const UserSchema = new Schema({
     },
 }, {
     timestamps: true,
+    toJSON: { virtuals: true }
 });
 
 // Virtual property to calculate expiration date based on expires_in

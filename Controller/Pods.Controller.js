@@ -24,7 +24,10 @@ const CreatePod = async ({ _id, user_name, description, pod_name }) => {
 
 const JoinPod = async ({ _id, pod_id }) => {
     try {
-        let pod = await Pod.findById(pod_id);
+        let pod = await Pod.findById(pod_id).select('+member_id');
+        console.log('==>',
+            pod
+        )
         if (!pod) {
             return {
                 status: false,
@@ -59,13 +62,15 @@ const DeletePod = async (admin_id, _id) => {
         if (!deletedPod) {
             return {
                 status: false,
-                message: 'No pod found with the given id or you are not the admin of this pod'
+                message: 'No pod found with the given id or you are not the admin of this pod',
+                data: null
             };
         }
 
         return {
             status: true,
-            message: 'Pod deleted successfully'
+            message: 'Pod deleted successfully',
+            data: deletedPod
         };
     } catch (error) {
         return {
@@ -138,24 +143,25 @@ const LeavePod = async (_id, member_id) => {
 };
 const EditNameOrDesOfPod = async (admin_id, _id, name, description) => {
     try {
-        // Find and update the pod in one shot
+        
         const updatedPod = await Pod.findOneAndUpdate(
-            { _id, admin_id }, // Criteria to find the pod
-            { $set: { name, description } }, // Update fields
-            { new: true } // Return the updated document
-        );
+            { _id, admin_id }, 
+            { $set: { name, description } }, 
+            { new: true }
+        )
 
-        // Check if the pod was found and updated
+        console.log(updatedPod)
         if (!updatedPod) {
             return {
                 status: false,
                 message: 'No pod found with the given id or you are not the admin of this pod'
             };
         }
-
+        
         return {
             status: true,
-            message: 'Pod details updated successfully'
+            message: 'Pod details updated successfully',
+            data: updatedPod,
         };
     } catch (error) {
         return {

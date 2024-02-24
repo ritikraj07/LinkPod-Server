@@ -3,6 +3,7 @@ const { verifyToken } = require("../Controller/Token.Controller");
 const VerifyUser = async (req, res, next) => {
     try {
         const token = req?.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
+        console.log('==>', token)
         if (!token) {
             return res.status(401).send({
                 status: false,
@@ -11,7 +12,7 @@ const VerifyUser = async (req, res, next) => {
         }
 
         const isValid = verifyToken(token)
-
+        console.log('==>', isValid)
 
         if (isValid.status) {
             req._id = isValid.payload.user_id;

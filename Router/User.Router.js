@@ -1,9 +1,10 @@
 const { Router } = require("express")
 const { generateAccessToken } = require("../Controller/Token.Controller");
-const { CreateUser, LoginUser } = require("../Controller/User.Controller");
+const { CreateUser, LoginUser, GetUserById } = require("../Controller/User.Controller");
 const { Auth, Redirect } = require("../Script/auth");
 const jwt = require('jsonwebtoken');
 const config = require("../Config");
+const { VerifyUser } = require("../Middleware");
 
 const userRouter = Router()
 
@@ -21,14 +22,13 @@ userRouter.post('/create-account', async (req, res) => {
 
 
 userRouter.post('/login', async (req, res) => {
-
-
     let { email, password } = req.body;
-
     let response = await LoginUser({ email, password })
 
-    // Perform authentication and generate a token
-    const token = generateAccessToken({ user_id: response.data._id }) // pass user id
+    if (!response.status) {
+        return res.send(response)
+    }
+    const token = generateAccessToken({ user_id: response.data._id }) 
 
 
     // Set the token in an HTTP-only cookie
@@ -38,6 +38,7 @@ userRouter.post('/login', async (req, res) => {
         sameSite: 'strict' // Adjust as needed for your application's requirements
     });
 
+    res.cookie('isLogin', true, { sameSite: 'strict', secure: true });
     res.send(response);
 });
 
@@ -55,7 +56,6 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
         const { email_id, password } = userData;
 
         const { status, data } = await Redirect(code);
-        console.log(status, data, '====== LinkedIn redirect');
 
         if (status) {
             const { access_token, expires_in, scope, id_token } = data;
@@ -92,25 +92,26 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
     }
 });
 
-userRouter.get('/get-user-data-form-linked', async (req, res) => {
-    
-
-    res.send("ok")
-})
-
 
 userRouter.get('/logout', async (req, res) => {
     res.clearCookie('token');
     res.clearCookie('isLogin');
-    res.send("logout succefully")
+    res.cookie('isLogin', false, { sameSite: 'strict', secure: true });
+    res.send({
+        status: true,
+        data: null,
+        message:'logout successfully'
+    })
 
 })
 
-userRouter.get('/getdata', async (req, res) => {
-
+userRouter.get('/getdata', VerifyUser, async (req, res) => {
+    let id = req._id;
+    let response = await GetUserById(id);
+    res.send(response);
 })
 
-userRouter.get('/id/:id', async (req, res) => { })
+
 
 module.exports = userRouter
 
