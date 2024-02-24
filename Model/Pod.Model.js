@@ -8,6 +8,7 @@ const PodSchema = new Schema({
     description: String,
     member_id: {
         type: [String],
+        select: false
     },
     admin_id: {
         type: String,
@@ -16,6 +17,12 @@ const PodSchema = new Schema({
     admin_name: {
         type: String,
         required: true
+    },
+    member_count: {
+        type: Number,
+        default: function () {
+            return this.member_id ? this.member_id.length : 0;
+        }
     }
 },
     {
@@ -23,10 +30,12 @@ const PodSchema = new Schema({
         toJSON: { virtuals: true } // Enable virtual fields to be included in JSON output
     });
 
-// Define a virtual field for member_count
-PodSchema.virtual('member_count').get(function () {
-    return this.member_id?.length;
-});
+PodSchema.pre('save', function (next) {
+    if (this.isModified('member_id')) {
+        this.member_count = this.member_id ? this.member_id.length : 0;
+    }
+    next();
+})
 
 const Pod = model('Pod', PodSchema);
 
