@@ -173,42 +173,23 @@ const EditNameOrDesOfPod = async (admin_id, _id, name, description) => {
 };
 
 
-const SearchInPod = async (podId, searchTerm) => {
+const searchPods = async (searchTerm) => {
     try {
-        const pod = await Pod.findById(podId);
-        if (!pod) {
-            return {
-                status: false,
-                message: 'No pod found with this id'
-            };
-        }
+        // Construct the query object to search for pods with matching name or description
+        const query = {
+            $or: [
+                { name: { $regex: searchTerm, $options: 'i' } }, // Search for name containing the searchTerm (case-insensitive)
+                { description: { $regex: searchTerm, $options: 'i' } } // Search for description containing the searchTerm (case-insensitive)
+            ]
+        };
 
-        const regex = new RegExp(searchTerm, 'i'); // Case-insensitive search term regex
-
-        // Use aggregation pipeline to search for name or description
-        const results = await Pod.aggregate([
-            { $match: { _id: pod._id } }, // Match the specific pod
-            {
-                $project: {
-                    _id: 0, // Exclude _id from the results
-                    name: 1, // Include name field
-                    description: 1, // Include description field
-                    score: {
-                        $sum: [
-                            { $cond: [{ $regexMatch: { input: '$name', regex: regex } }, 1, 0] }, // Add 1 if name matches
-                            { $cond: [{ $regexMatch: { input: '$description', regex: regex } }, 1, 0] } // Add 1 if description matches
-                        ]
-                    }
-                }
-            },
-            { $match: { score: { $gt: 0 } } }, // Filter documents with a non-zero score
-            { $sort: { score: -1 } } // Sort by score in descending order
-        ]);
+        // Use the constructed query object to find pods that match the criteria
+        const pods = await Pod.find(query);
 
         return {
             status: true,
             message: 'Search successful',
-            data: results
+            data: pods
         };
     } catch (error) {
         return {
@@ -220,10 +201,9 @@ const SearchInPod = async (podId, searchTerm) => {
 };
 
 
-
 module.exports = {
     CreatePod, JoinPod,
     DeletePod, RemoveMemberFromPod,
     LeavePod, EditNameOrDesOfPod,
-    SearchInPod
+    searchPods
 }
