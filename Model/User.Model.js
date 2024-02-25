@@ -1,13 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const PostSchema = new Schema({
-    urn: {
-        type: String,
-        required: true
-    }
-}, {
-    timestamps: true
-});
+
 
 const UserSchema = new Schema({
     email: {
@@ -20,11 +13,9 @@ const UserSchema = new Schema({
         required: [true, 'Password is required'],
         select: false
     },
-    posts: [PostSchema],
-    // post count for each month
     postCount: {
         type: Number,
-        default: calculateNoOfPost()
+        default: 3
     },
     comments: {
         type: Number,
@@ -71,14 +62,12 @@ const UserSchema = new Schema({
 
 
 UserSchema.method.calculateNoOfPost = function () {
-    // Define the number of posts allowed based on membership tier
-    // can i add dependency here
-    // if (membershipTier) change update membership tier
+
     switch (this.membershipTier) {
         case 'Basic':
-            return 3; 
+            return 3;
         case 'Premium':
-            return 5; 
+            return 5;
         case 'Gold':
             return 10;
         default:
@@ -87,25 +76,35 @@ UserSchema.method.calculateNoOfPost = function () {
 };
 
 UserSchema.pre('save', function (next) {
+    // Update LinkedIn access token expiration date if modified
     if (this.isModified('linkedIn_access_token_expires_in')) {
         this.linkedInAccessTokenExpireDate = this.linkedIn_access_token_expires_in ?
             new Date(Date.now() + this.linkedIn_access_token_expires_in * 1000) :
             null;
     }
-    if (this.isModified('posts')) {
-        /**
-         * write logic for post count on the basic of posts date
-         * and check for membership
-         */
-        this.postCount = this.posts ? this.posts.length : 0
-    }
 
-    if(this.isModified('membershipTier')) {
+    // Update post count based on posts and membership tier
+    if (this.isModified('membershipTier')) {
         this.postCount = this.calculateNoOfPost();
     }
-   
+
+    // Additional logic for updating post count every month
+    if (this.isNew) {
+        // Get current date and user's creation date
+        const currentDate = new Date();
+        const creationDate = new Date(this.createdAt);
+
+        // Check if it's the same day of the month as the user's creation date
+        if (currentDate.getDate() === creationDate.getDate()) {
+            // Update post count using calculateNoOfPost() method
+            this.postCount = this.calculateNoOfPost();
+        }
+    }
+
+    // Call next to continue with the save operation
     next();
 });
+
 
 const User = model('User', UserSchema);
 
