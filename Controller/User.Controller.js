@@ -56,10 +56,13 @@ const CreateUser = async ({
 
 
 
+
+
 const LoginUser = async ({ email, password }) => {
     try {
         // Find the user with the provided email
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).select('+password');
+        console.log(user)
 
         // If user does not exist, return error
         if (!user) {
@@ -67,6 +70,15 @@ const LoginUser = async ({ email, password }) => {
                 status: false,
                 data: null,
                 message: 'No User Found! 😒'
+            };
+        }
+
+        // Ensure the user object has a password field
+        if (!user.password) {
+            return {
+                status: false,
+                data: null,
+                message: 'User password is missing. Please contact support. 😒'
             };
         }
 
@@ -82,6 +94,7 @@ const LoginUser = async ({ email, password }) => {
             };
         }
 
+        // If everything is successful, return user data
         return {
             status: true,
             data: {
@@ -93,13 +106,19 @@ const LoginUser = async ({ email, password }) => {
             message: 'Login successful'
         };
     } catch (error) {
+        // Log the error for debugging purposes
+        console.error('LoginUser error:', error);
+
+        // Return a generic error message
         return {
             status: false,
-            data: error,
-            message: 'Something went wrong'
+            data: null,
+            message: 'Something went wrong. Please try again later.'
         };
     }
 };
+
+
 
 
 
