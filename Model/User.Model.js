@@ -61,8 +61,7 @@ const UserSchema = new Schema({
 });
 
 
-UserSchema.method.calculateNoOfPost = function () {
-
+UserSchema.methods.calculateNoOfPost = function () {
     switch (this.membershipTier) {
         case 'Basic':
             return 3;
@@ -74,6 +73,7 @@ UserSchema.method.calculateNoOfPost = function () {
             return 0;
     }
 };
+
 
 UserSchema.pre('save', function (next) {
     // Update LinkedIn access token expiration date if modified
