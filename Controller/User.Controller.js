@@ -21,7 +21,11 @@ const CreateUser = async ({
                 linkedIn_email: email,
             })
 
-            return user;
+            return {
+                status: false,
+                data:null,
+                message: 'Already have account 🎉'
+            }
 
         }
 
