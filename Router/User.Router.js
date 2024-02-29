@@ -28,7 +28,7 @@ userRouter.post('/login', async (req, res) => {
     if (!response.status) {
         return res.send(response)
     }
-    const token = generateAccessToken({ user_id: response.data._id }) 
+    const token = generateAccessToken({ user_id: response.data._id })
 
 
     // Set the token in an HTTP-only cookie
@@ -66,6 +66,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
                 picture, locale, access_token, expires_in,
             });
 
+            // console.log(response)
             if (response.status === false) {
                 // !User has already been created
                 const errorData = encodeURIComponent(JSON.stringify(response));
@@ -88,7 +89,7 @@ userRouter.get('/linkedin/redirect', async (req, res) => {
     } catch (error) {
         console.error('Error in LinkedIn redirect:', error);
         return res.status(500).json({ error: 'Internal server error' });
-        
+
     }
 });
 
@@ -100,7 +101,7 @@ userRouter.get('/logout', async (req, res) => {
     res.send({
         status: true,
         data: null,
-        message:'logout successfully'
+        message: 'logout successfully'
     })
 
 })

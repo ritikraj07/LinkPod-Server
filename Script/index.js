@@ -1,5 +1,11 @@
 const axios = require('axios');
 
+
+const GetPostInfo = async ({ postURN, accessToken }) => {
+    
+}
+
+
 const AddReactionToPost = async ({ postURN, accessToken, userURN, reactionType = 'LIKE' }) => {
 
     let data = JSON.stringify({
@@ -83,11 +89,6 @@ const GetUserFromLinked = async (accessToken) => {
     }
 }
 
-function extractIdFromLinkedInUrl(url) {
-    const pattern = /-([\d]+)-/;
-    const match = url.match(pattern);
-    return match ? match[1] : null;
-}
 
 
 

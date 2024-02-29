@@ -6,6 +6,7 @@ const cookieParser = require('cookie-parser')
 const ConnectDatabase = require('./DB');
 const userRouter = require('./Router/User.Router');
 const PodRouter = require('./Router/Pod.Router');
+const PostRouter = require('./Router/Post.Router');
 
 
 const app = express()
@@ -32,7 +33,7 @@ app.get('/docs', (req, res) => {
 
 app.use('/api/user', userRouter);
 app.use('/api/pod', PodRouter);
-
+app.use('/api/post', PostRouter);
 
 
 ConnectDatabase()

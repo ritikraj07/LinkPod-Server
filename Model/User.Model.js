@@ -27,6 +27,7 @@ const UserSchema = new Schema({
         default: 0,
         select: false
     },
+    post:[String],
     name: String,
     userURN: String,
     picture: String,

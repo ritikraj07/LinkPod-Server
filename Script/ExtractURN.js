@@ -8,3 +8,5 @@ function extractIdFromLinkedInUrl(url) {
     // Check if there's a match and return the ID, or return null if no match found
     return match ? match[1] : null;
 }
+
+module.exports = extractIdFromLinkedInUrl;

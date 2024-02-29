@@ -19,12 +19,12 @@ const jwt = require('jsonwebtoken')
 // }
 
 
-function decode(token) {
+// function decode(token) {
 
-    return jwt.decode(token)
-}
+//     return jwt.decode(token)
+// }
 
-console.log(decode('AQQoXKsoUe_JYTfMgsLWflPrF93TycwiwTM8kLJLoTY0Yzrmar_jwYCC4VVRZltncMTv6CmkbeuulB7709tJw0TjzKzDOOSJB1YwRjgUxW_D7ym3Kh6A_irsRhBT3u9xIbsWEkXprO3cAW6erQHzKnrx2lXxVv4llwQoBK8b-tlVxjwq800eH-fMtelq1ObqSV9hHRQ_ndUNdMpnxUQ'))
+// console.log(decode('AQQoXKsoUe_JYTfMgsLWflPrF93TycwiwTM8kLJLoTY0Yzrmar_jwYCC4VVRZltncMTv6CmkbeuulB7709tJw0TjzKzDOOSJB1YwRjgUxW_D7ym3Kh6A_irsRhBT3u9xIbsWEkXprO3cAW6erQHzKnrx2lXxVv4llwQoBK8b-tlVxjwq800eH-fMtelq1ObqSV9hHRQ_ndUNdMpnxUQ'))
 
 
 /*
@@ -44,3 +44,5 @@ console.log(decode('AQQoXKsoUe_JYTfMgsLWflPrF93TycwiwTM8kLJLoTY0Yzrmar_jwYCC4VVR
 }
 
 */
+
+

@@ -1,9 +1,10 @@
 const { verifyToken } = require("../Controller/Token.Controller");
+const User = require("../Model/User.Model");
+const { default: extractIdFromLinkedInUrl } = require("../Script/ExtractURN");
 
 const VerifyUser = async (req, res, next) => {
     try {
         const token = req?.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
-        console.log('==>', token)
         if (!token) {
             return res.status(401).send({
                 status: false,
@@ -12,7 +13,7 @@ const VerifyUser = async (req, res, next) => {
         }
 
         const isValid = verifyToken(token)
-        console.log('==>', isValid)
+        
 
         if (isValid.status) {
             req._id = isValid.payload.user_id;
@@ -23,18 +24,59 @@ const VerifyUser = async (req, res, next) => {
             res.send({
                 status: false,
                 message: 'Unauthorize Access',
+                data: null
             })
         }
     } catch (error) {
         res.status(500).send({
             status: false,
             message: 'Server or Verification Error!',
-            error: error.message // Optionally, include the error message
+            data: error.message // Optionally, include the error message
         });
 
     }
 
 }
 
+const CheckPostCredentials = async (req, res, next) => {
+    try {
+        const id = req._id
+        const user = await User.findById(id);
+        if (!user) {
+            return res.status(401).send({
+                status: false,
+                message: 'Unauthorize Access',
+                data: null
+            })
+        }
+        let no_of_left = user.postCount;
+        if (no_of_left <= 0) {
+            return res.status(401).send({
+                status: false,
+                message: 'You have no post left for this monthes! 😒',
+                data: null
+            })
+        }
+        let post_url = req.body.post_url
+        let post_urn = extractIdFromLinkedInUrl(post_url)
+        if (!post_urn) {
+            return res.status(401).send({
+                status: false,
+                message: 'Invalid post url',
+                data: null
+            })
+        }
+        req.body.urn = post_url;
+        req.user = user;
+        next();
+    }catch(error){
+        res.status(500).send({
+            status: false,
+            message: 'Server or Verification Error!',
+            data: error.message // Optionally, include the error message
+        });
+    }
+}
 
-module.exports = { VerifyUser }
+
+module.exports = { VerifyUser, CheckPostCredentials }

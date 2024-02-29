@@ -23,7 +23,7 @@ const CreateUser = async ({
 
             return {
                 status: false,
-                data:null,
+                data: null,
                 message: 'Already have account 🎉'
             }
 
@@ -130,23 +130,15 @@ const LoginUser = async ({ email, password }) => {
 const GetUserById = async (id) => {
     try {
         // Find the user by ID
-        let user = await User.aggregate([
-            {
-                $match: {
-                    _id: id
-                }
-                
-            }, {
-                $project: {
-                    _id: 1,
-                    name: 1,
-                    email: 1,
-                    picture: 1,
-                    linkedIn_email: 1,  
-                }
-            }
-        ])
+        let user = await User.findById(id, {
+            name: 1,
+            email: 1,
+            picture: 1,
+            linkedIn_email: 1,
+        }).exec();
+       
 
+        
         // If user does not exist, return error
         if (!user) {
             return {
