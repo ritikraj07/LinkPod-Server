@@ -204,10 +204,7 @@ const GetUserById = async (id) => {
             status: true,
             message: 'success',
             data: {
-                _id: user._id,
-                email: user.email,
-                name: user.name,
-                picture: user.picture,
+                user,
                 my_pod: myPods,
                 joined_pod: joinedPods
             }
