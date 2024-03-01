@@ -2,6 +2,7 @@ const bcrypt = require('bcrypt');
 const User = require("../Model/User.Model");
 const { generateRefreshToken } = require('./Token.Controller');
 const Pod = require('../Model/Pod.Model');
+const { GetAllPostByUser } = require('./Post.Controller');
 
 const CreateUser = async ({
     email_id, email, password, iat, exp, sub, name,
@@ -190,6 +191,7 @@ const GetUserById = async (id) => {
 
         let myPods = userPods[0].myPods;
         let joinedPods = userPods[0].joinedPods;
+        let posts = await GetAllPostByUser(user._id)
 
 
         return {
@@ -198,7 +200,8 @@ const GetUserById = async (id) => {
             data: {
                 user,
                 my_pod: myPods,
-                joined_pod: joinedPods
+                joined_pod: joinedPods,
+                posts
             }
         }
 

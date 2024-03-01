@@ -1,10 +1,11 @@
 const { verifyToken } = require("../Controller/Token.Controller");
 const User = require("../Model/User.Model");
-const { default: extractIdFromLinkedInUrl } = require("../Script/ExtractURN");
+const extractIdFromLinkedInUrl = require("../Script/ExtractURN");
 
 const VerifyUser = async (req, res, next) => {
     try {
         const token = req?.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
+        
         if (!token) {
             return res.status(401).send({
                 status: false,
@@ -50,6 +51,7 @@ const CheckPostCredentials = async (req, res, next) => {
             })
         }
         let no_of_left = user.postCount;
+        
         if (no_of_left <= 0) {
             return res.status(401).send({
                 status: false,
@@ -66,8 +68,10 @@ const CheckPostCredentials = async (req, res, next) => {
                 data: null
             })
         }
-        req.body.urn = post_url;
+        req.body.urn = post_urn;
         req.user = user;
+        user.postCount = user.postCount - 1;
+        await user.save();
         next();
     }catch(error){
         res.status(500).send({

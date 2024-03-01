@@ -27,9 +27,11 @@ const UserSchema = new Schema({
         default: 0,
         select: false
     },
-    post:[String],
     name: String,
-    userURN: String,
+    userURN: {
+        type: String,
+        unique: true,
+    },
     picture: String,
     linkedIn_email: String,
     linkedIn_access_token: {

@@ -2,6 +2,7 @@ const Pod = require("../Model/Pod.Model")
 
 const CreatePod = async ({ _id, user_name, description, pod_name }) => {
     try {
+
         const pod = await Pod.create({
             name: pod_name, description: description,
             admin_id: _id, admin_name: user_name
@@ -25,9 +26,7 @@ const CreatePod = async ({ _id, user_name, description, pod_name }) => {
 const JoinPod = async ({ _id, pod_id }) => {
     try {
         let pod = await Pod.findById(pod_id).select('+member_id');
-        console.log('==>',
-            pod
-        )
+     
         if (!pod) {
             return {
                 status: false,

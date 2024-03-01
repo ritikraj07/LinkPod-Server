@@ -1,5 +1,6 @@
 function extractIdFromLinkedInUrl(url) {
     // Regular expression pattern to match the ID in the URL
+   
     const pattern = /-([\d]+)-/;
 
     // Match the pattern in the URL
