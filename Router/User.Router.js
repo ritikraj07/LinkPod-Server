@@ -116,7 +116,7 @@ userRouter.get('/getdata', VerifyUser, async (req, res) => {
 userRouter.get('/check-cookie', async (req, res) => {
     // Set the secure flag to true for SameSite=None
     res.cookie('isLogin', true, {
-        httpOnly: false,
+        httpOnly: true,
         expires: new Date(Date.now() + 3600000),
         secure: true, // Change to true
         sameSite:"none"
