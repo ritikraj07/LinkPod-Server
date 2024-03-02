@@ -119,6 +119,7 @@ userRouter.get('/check-cookie', async (req, res) => {
         httpOnly: false,
         expires: new Date(Date.now() + 3600000),
         secure: true, // Change to true
+        sameSite:"none"
     });
     res.send({
         status: true,
