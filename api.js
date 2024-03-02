@@ -7,10 +7,16 @@ const ConnectDatabase = require('./DB');
 const userRouter = require('./Router/User.Router');
 const PodRouter = require('./Router/Pod.Router');
 const PostRouter = require('./Router/Post.Router');
+const config = require('./Config');
 
 
 const app = express()
-app.use(cors())
+const corsOptions = {
+    origin: config.FRONTEND_URL,
+    credentials: true,
+    optionSuccessStatus: 200,
+}
+app.use(cors(corsOptions))
 app.use(cookieParser());
 app.use(express.json());
 // app.use(express.urlencoded({ extended: true, limit: "16kb" }))

@@ -116,8 +116,7 @@ userRouter.get('/getdata', VerifyUser, async (req, res) => {
 userRouter.get('/check-cookie', async (req, res) => {
     res.cookie('isLogin', true, {
         httpOnly: false,
-        sameSite: 'strict',
-        secure: true
+        expires: new Date(Date.now() + 3600000),
     });
     res.send({
         status: true,
