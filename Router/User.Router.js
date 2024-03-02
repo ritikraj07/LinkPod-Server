@@ -33,9 +33,9 @@ userRouter.post('/login', async (req, res) => {
 
     // Set the token in an HTTP-only cookie
     res.cookie('token', token, {
-        // httpOnly: true,
-        // secure: true, // Enable this if your application uses HTTPS
-        // sameSite: 'strict' // Adjust as needed for your application's requirements
+        httpOnly: true,
+        secure: true, // Enable this if your application uses HTTPS
+        sameSite: 'strict' // Adjust as needed for your application's requirements
     });
 
     console.log(response, token)
