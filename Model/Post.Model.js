@@ -32,9 +32,12 @@ const PostSchema = new Schema({
 )
 
 PostSchema.pre('save', async function (next) {
-    await this.model('User').updateOne({ _id: this.created_by }, { $inc: { postCount: -1 } });
+    if (this.isNew) {
+        await this.model('User').updateOne({ _id: this.created_by }, { $inc: { postCount: -1 } });
+    }
     next();
 });
+
 
 const Post = model('Post', PostSchema);
 module.exports = Post;

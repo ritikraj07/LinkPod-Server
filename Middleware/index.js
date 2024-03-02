@@ -70,14 +70,12 @@ const CheckPostCredentials = async (req, res, next) => {
         }
         req.body.urn = post_urn;
         req.user = user;
-        user.postCount = user.postCount - 1;
-        await user.save();
         next();
     }catch(error){
         res.status(500).send({
             status: false,
             message: 'Server or Verification Error!',
-            data: error.message // Optionally, include the error message
+            data: error
         });
     }
 }

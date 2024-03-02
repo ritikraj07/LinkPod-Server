@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -129,25 +129,6 @@
           <p><b>Method:</b> GET</p>
           <p><b>Route:</b> /user/logout</p>
           <p>No body required.</p>
-        </div>
-      </details>
-
-      <!-- user linkedIn connection -->
-      <details class="api-section">
-        <summary class="api-summary">Register With LinkedIn</summary>
-        <div class="api-details">
-          <p>Registers a new user with LinkedIn authentication.</p>
-          <p><b>Method:</b> POST</p>
-          <p><b>Route:</b> /user/linkedIn/authorize</p>
-          <details class="api-sub-details">
-            <summary class="api-sub-summary">Required Body:</summary>
-            <div class="api-sub-body">
-              <ul>
-                <li>email</li>
-                <li>password</li>
-              </ul>
-            </div>
-          </details>
         </div>
       </details>
     </section>
@@ -462,6 +443,124 @@
       </details>
 
       <!-- Add other routes in a similar format -->
+    </section>
+
+    <!-- post section -->
+
+    <section id="post_section">
+      <h3>POST</h3>
+
+      <details class="api-section">
+        <summary class="api-summary">Create Post</summary>
+        <div class="api-details">
+          <p>Registers a new post with the system.</p>
+          <p><b>Method:</b> POST</p>
+          <p><b>Route:</b> /post/create</p>
+          <details class="api-sub-details">
+            <summary class="api-sub-summary">Required Body:</summary>
+            <div class="api-sub-body">
+              <ul>
+                <li>title</li>
+                <li>description</li>
+                <li>post_url</li>
+                <li>pod_id</li>
+                <li>
+                  avgTime (optional) in milliseconds || formate "100000:900000"
+                </li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="api-response">
+          <details class="api-response-details">
+            <summary class="api-response-summary">Success Response</summary>
+            <div class="api-response-success">
+              <ul>
+                <li><b>status:</b> true</li>
+                <li class="api-data">
+                  <details>
+                    <summary>data</summary>
+                    <ul>
+                      <li type="circle">_id</li>
+                      <li>title</li>
+                      <li>description</li>
+                      <li>urn</li>
+                      <li>created_by</li>
+                      <li>createdAt</li>
+                      <li>updatedAt</li>
+                    </ul>
+                  </details>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="api-response-details">
+            <summary class="api-response-summary">Fail Response</summary>
+            <div class="api-response-fail">
+              <ul>
+                <li><b>status:</b> false</li>
+                <li><b>data:</b> error</li>
+                <li><b>message:</b> "Internal Server Error"</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
+
+      <details class="api-section">
+        <summary class="api-summary">Get Post by ID</summary>
+        <div class="api-details">
+          <p>Retrieves information about a post by its ID.</p>
+          <p><b>Method:</b> GET</p>
+          <p><b>Route:</b> /post/:id</p>
+          <details class="api-sub-details">
+            <summary class="api-sub-summary">URL Parameters:</summary>
+            <div class="api-sub-body">
+              <ul>
+                <li>id: The unique identifier of the post.</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+
+        <div class="api-response">
+          <details class="api-response-details">
+            <summary class="api-response-summary">Success Response</summary>
+            <div class="api-response-success">
+              <ul>
+                <li><b>status:</b> true</li>
+                <li class="api-data">
+                  <details>
+                    <summary>data</summary>
+                    <ul>
+                      <li type="circle">_id</li>
+                      <li>title</li>
+                      <li>description</li>
+                      <li>urn</li>
+                      <li>created_by</li>
+                      <li>createdAt</li>
+                      <li>updatedAt</li>
+                    </ul>
+                  </details>
+                </li>
+              </ul>
+            </div>
+          </details>
+
+          <details class="api-response-details">
+            <summary class="api-response-summary">Fail Response</summary>
+            <div class="api-response-fail">
+              <ul>
+                <li><b>status:</b> false</li>
+                <li><b>data:</b> error</li>
+                <li><b>message:</b> "Internal Server Error"</li>
+              </ul>
+            </div>
+          </details>
+        </div>
+      </details>
     </section>
 
     <!-- Move script tag to the end of the body for better performance -->

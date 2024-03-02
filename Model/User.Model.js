@@ -33,7 +33,10 @@ const UserSchema = new Schema({
         unique: true,
     },
     picture: String,
-    linkedIn_email: String,
+    linkedIn_email: {
+        type: String,
+        unique: [true, 'Email already Linked 😒'],
+    },
     linkedIn_access_token: {
         type: String,
         required: true,
