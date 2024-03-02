@@ -39,7 +39,7 @@ userRouter.post('/login', async (req, res) => {
     });
 
     res.cookie('isLogin', true, { httpOnly: true, sameSite: 'strict', secure: true });
-    res.send(response);
+    res.send({...response, token, isLogin: true});
 });
 
 
