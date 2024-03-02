@@ -113,6 +113,13 @@ userRouter.get('/getdata', VerifyUser, async (req, res) => {
 })
 
 
+userRouter.get('/check-cookie', async (req, res) => {
+    res.cookie('isLogin', true, { httpOnly: true, sameSite: 'strict', secure: true });
+    res.send({
+        status: true,
+    })
+})
+
 
 module.exports = userRouter
 
