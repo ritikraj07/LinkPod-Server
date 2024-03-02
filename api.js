@@ -15,15 +15,19 @@ const app = express();
 
 // Configure CORS
 const corsOptions = {
+    // Set origin to the specific frontend URL, or '*' if it's applicable
     // origin: config.FRONTEND_URL,
     credentials: true,
+    // Add the following line to include the required headers for CORS
     // optionSuccessStatus: 200,
 };
 app.use(cors(corsOptions));
 
 // Configure headers for CORS
 app.use(function (req, res, next) {
+    // Set Access-Control-Allow-Origin header to the requesting origin
     res.header('Access-Control-Allow-Origin', req.headers.origin);
+    // Add the following line to allow sending additional headers
     res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     next();
 });
