@@ -38,8 +38,7 @@ userRouter.post('/login', async (req, res) => {
         sameSite: 'strict' // Adjust as needed for your application's requirements
     });
 
-    console.log(response, token)
-    res.cookie('isLogin', true, { sameSite: 'strict', secure: true });
+    res.cookie('isLogin', true, { httpOnly: true, sameSite: 'strict', secure: true });
     res.send(response);
 });
 
