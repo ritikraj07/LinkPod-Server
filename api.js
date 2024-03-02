@@ -1,49 +1,64 @@
-require('dotenv').config({ path: './env' })
+// Import required modules
+require('dotenv').config({ path: './env' });
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
 const ConnectDatabase = require('./DB');
 const userRouter = require('./Router/User.Router');
 const PodRouter = require('./Router/Pod.Router');
 const PostRouter = require('./Router/Post.Router');
 const config = require('./Config');
 
+// Create Express app
+const app = express();
 
-const app = express()
+// Configure CORS
 const corsOptions = {
-    origin: config.FRONTEND_URL,
+    // origin: config.FRONTEND_URL,
     credentials: true,
-    optionSuccessStatus: 200,
-}
-app.use(cors(corsOptions))
+    // optionSuccessStatus: 200,
+};
+app.use(cors(corsOptions));
+
+// Configure headers for CORS
+app.use(function (req, res, next) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
+
+// Parse cookies and JSON bodies
 app.use(cookieParser());
 app.use(express.json());
-// app.use(express.urlencoded({ extended: true, limit: "16kb" }))
-app.use(morgan('tiny'))
+
+// Configure logging
+app.use(morgan('tiny'));
+
+// Serve static files
 app.use(express.static('Static'));
 
-
-
+// Define routes
 app.get('/', (req, res) => {
     res.send(`<div style="margin: auto" >
         <h1> Welcome to Linkpod </h1>
-        <p> click here to <a href="/index"> read </a> documents </p>
-    </div>`)
-})
+        <p> Click here to <a href="/index">read</a> documents </p>
+    </div>`);
+});
 
 app.get('/docs', (req, res) => {
     res.sendFile('index.html', { root: 'Static' });
-})
+});
 
-
+// Define API routes
 app.use('/api/user', userRouter);
 app.use('/api/pod', PodRouter);
 app.use('/api/post', PostRouter);
 
-
+// Connect to the database and start the server
 ConnectDatabase()
     .then(() => {
-        app.listen(8000)
-        console.log("Server Started at 8000")
-    }).catch((error) => console.log("Error==>", error))
+        app.listen(8000);
+        console.log('Server Started at 8000');
+    })
+    .catch((error) => console.log('Error==>', error));
