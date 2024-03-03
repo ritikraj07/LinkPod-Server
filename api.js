@@ -21,11 +21,11 @@ const corsOptions = {
     // Add the following line to include the required headers for CORS
     optionSuccessStatus: 200,
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 // Configure headers for CORS
 app.use(function (req, res, next) {
-    res.setHeader('Access-Control-Allow-Origin', 'https://linkpod.onrender.com');
+    // res.setHeader('Access-Control-Allow-Origin', 'https://linkpod.onrender.com');
     // Set Access-Control-Allow-Origin header to the requesting origin
     res.header('Access-Control-Allow-Origin', req.headers.origin);
     // Add the following line to allow sending additional headers
