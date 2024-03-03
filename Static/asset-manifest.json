@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.7b13770f.css",
-    "main.js": "/static/js/main.239f0bd3.js",
+    "main.css": "/static/css/main.a28275e6.css",
+    "main.js": "/static/js/main.5279dcb4.js",
     "static/media/pattern-tree.svg": "/static/media/pattern-tree.431da656681abcdffac51bee04d7f581.svg",
     "static/media/bg-sign-in-basic.jpeg": "/static/media/bg-sign-in-basic.f327db1d0e4b00ba3c81.jpeg",
     "static/media/bg-sign-up-cover.jpeg": "/static/media/bg-sign-up-cover.30c5950b22e74f0d82ba.jpeg",
@@ -24,11 +24,11 @@
     "static/media/logo-atlassian.svg": "/static/media/logo-atlassian.d92c4f81bb3efbf288b3ef71ce2fbfb0.svg",
     "static/media/logo-asana.svg": "/static/media/logo-asana.5c9ced4f9006cfb2d4c10f905cf6d310.svg",
     "index.html": "/index.html",
-    "main.7b13770f.css.map": "/static/css/main.7b13770f.css.map",
-    "main.239f0bd3.js.map": "/static/js/main.239f0bd3.js.map"
+    "main.a28275e6.css.map": "/static/css/main.a28275e6.css.map",
+    "main.5279dcb4.js.map": "/static/js/main.5279dcb4.js.map"
   },
   "entrypoints": [
-    "static/css/main.7b13770f.css",
-    "static/js/main.239f0bd3.js"
+    "static/css/main.a28275e6.css",
+    "static/js/main.5279dcb4.js"
   ]
 }
