@@ -53,7 +53,7 @@ const CheckPostCredentials = async (req, res, next) => {
         let no_of_left = user.postCount;
         
         if (no_of_left <= 0) {
-            return res.status(401).send({
+            return res.send({
                 status: false,
                 message: 'You have no post left for this monthes! 😒',
                 data: null
@@ -62,7 +62,7 @@ const CheckPostCredentials = async (req, res, next) => {
         let post_url = req.body.post_url
         let post_urn = extractIdFromLinkedInUrl(post_url)
         if (!post_urn) {
-            return res.status(401).send({
+            return res.send({
                 status: false,
                 message: 'Invalid post url',
                 data: null

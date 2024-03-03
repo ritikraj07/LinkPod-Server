@@ -70,7 +70,7 @@ const UserSchema = new Schema({
 UserSchema.methods.calculateNoOfPost = function () {
     switch (this.membershipTier) {
         case 'Basic':
-            return 3;
+            return 30;
         case 'Premium':
             return 5;
         case 'Gold':

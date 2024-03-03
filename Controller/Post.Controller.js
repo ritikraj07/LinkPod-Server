@@ -7,7 +7,7 @@ const { ReadyForReactionAndComment } = require("../Script/service");
 
 
 
-const CreatePost = async ({ title, description, urn, created_by, pod_id, avgTime=5000 }) => {
+const CreatePost = async ({ title, description, urn, created_by, pod_id, avgTime="6000:10000" }) => {
     try {
         // Create the post
         const post = await Post.create({ title, description, urn, created_by });
