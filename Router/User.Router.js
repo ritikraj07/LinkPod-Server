@@ -39,7 +39,7 @@ userRouter.post('/login', async (req, res) => {
     });
 
     res.cookie('isLogin', true, { httpOnly: true, sameSite: 'strict', secure: true });
-    res.send({...response, token, isLogin: true});
+    res.send({ ...response, token, isLogin: true });
 });
 
 
@@ -119,7 +119,8 @@ userRouter.get('/check-cookie', async (req, res) => {
         httpOnly: true,
         expires: new Date(Date.now() + 3600000),
         secure: true, // Change to true
-        sameSite:"none"
+        sameSite: "none",
+        domain: "https://linkpod.onrender.com",
     });
     res.send({
         status: true,
