@@ -38,7 +38,14 @@ userRouter.post('/login', async (req, res) => {
         sameSite: 'strict' // Adjust as needed for your application's requirements
     });
 
-    res.cookie('isLogin', true, { httpOnly: true, sameSite: 'strict', secure: true });
+
+    res.cookie('isLogin_test', true, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 3600000),
+        secure: true, // Change to true
+        sameSite: "none",
+        domain: "https://linkpod.onrender.com",
+    });
     res.send({ ...response, token, isLogin: true });
 });
 
