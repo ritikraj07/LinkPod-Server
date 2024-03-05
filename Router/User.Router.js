@@ -116,6 +116,13 @@ userRouter.get('/logout', async (req, res) => {
 userRouter.get('/getdata', VerifyUser, async (req, res) => {
     let id = req._id;
     let response = await GetUserById(id);
+    res.cookie('isLogin_test', true, {
+        httpOnly: true,
+        expires: new Date(Date.now() + 3600000),
+        secure: true, // Change to true
+        sameSite: "none",
+        domain: "https://linkpod.onrender.com",
+    });
     res.send(response);
 })
 

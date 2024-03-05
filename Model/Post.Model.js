@@ -5,10 +5,6 @@ const PostSchema = new Schema({
         type: String,
         required: true
     },
-    description: {
-        type: String,
-        default: ''
-    },
     urn: {
         type: String,
         required: true

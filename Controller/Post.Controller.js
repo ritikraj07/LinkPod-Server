@@ -2,17 +2,54 @@ const Pod = require("../Model/Pod.Model")
 const Post = require("../Model/Post.Model")
 const User = require("../Model/User.Model");
 const { ReadyForReactionAndComment } = require("../Script/service");
+const { AddCommentToPost } = require("../Script");
 
 
+const CheckIsPostExist = async (urn) => {
+    const post = await Post.findOne({ urn });
+    if (post) {
+        return true;
+    }
+    return false;
+}
 
 
-
-const CreatePost = async ({ title, description, urn, created_by, pod_id, avgTime="6000:10000" }) => {
+const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:10000", user }) => {
     try {
-        // Create the post
-        const post = await Post.create({ title, description, urn, created_by });
+        if (await CheckIsPostExist(urn)) {
+            return {
+                status: false,
+                message: 'Post already exists',
+                data: null
+            };
+        }
 
-        ManagePost({ title, description, urn, created_by, pod_id, avgTime });
+        let response = await AddCommentToPost({ postURN: urn, accessToken: user.linkedIn_access_token, userURN: user.userURN, comment: "#cfbf" });
+        if (!response.status) {
+            // Check if response data contains the expected error message
+            const errorMessage = response.data.message || '';
+            const expectedErrorMessage1 = 'Provided threadUrn:';
+            const expectedErrorMessage2 = 'is not the same as the actual threadUrn:';
+            if (errorMessage.includes(expectedErrorMessage1) && errorMessage.includes(expectedErrorMessage2)) {
+                // Extract the actual and provided threadUrn values from the error message
+                const actualUrn = errorMessage.split(expectedErrorMessage2)[1].trim().split(':').pop();
+
+                urn = actualUrn;
+                // Re-check if the post exists with the swapped urn
+                if (await CheckIsPostExist(urn)) {
+                    // Post now exists with the correct urn
+                    return {
+                        status: false,
+                        message: 'Post already exists',
+                        data: null
+                    };
+                }
+            }
+            return response;
+        }
+
+        const post = await Post.create({ title, urn, created_by });
+        ManagePost({ title, urn, created_by, pod_id, avgTime });
 
         return {
             status: true,
@@ -29,10 +66,27 @@ const CreatePost = async ({ title, description, urn, created_by, pod_id, avgTime
 };
 
 
-async function ManagePost({ title, description, urn, created_by, pod_id, avgTime }) {
+async function ManagePost({ urn, pod_id, avgTime, created_by }) {
+    // Aggregate to exclude the created_by ID from the member_id array
+    const result = await Pod.aggregate([
+        {
+            $match: { _id: pod_id }
+        },
+        {
+            $project: {
+                member_id: {
+                    $filter: {
+                        input: "$member_id",
+                        as: "member",
+                        cond: { $ne: ["$$member", created_by] }
+                    }
+                }
+            }
+        }
+    ]).exec();
 
-    // Find member IDs of the pod
-    const { member_id } = await Pod.findById(pod_id, { member_id: 1 }).lean();
+    // Extract member_id from the result
+    const member_id = result.length > 0 ? result[0].member_id : [];
 
     // Update reactions and comments for all members of the pod
     await User.updateMany({ _id: { $in: member_id } }, { $inc: { reactions: 1, comments: 1 } });
@@ -43,10 +97,10 @@ async function ManagePost({ title, description, urn, created_by, pod_id, avgTime
         .limit(20)
         .lean();
 
-    // console.log({ users });
     // Add reactions and comments to the post
     ReadyForReactionAndComment({ urn, users, avgTime });
 }
+
 
 
 
@@ -87,8 +141,29 @@ async function GetAllPostByUser(id) {
 }
 
 
+async function DeletePost(id) {
+    try {
+        let post = await Post.findByIdAndDelete(id);
+        return {
+            status: true,
+            message: "post deleted successfully",
+            data: post
+        }
+
+    }
+    catch (error) {
+        return {
+            status: false,
+            message: 'Internal Server Error',
+            data: error
+        }
+    }
+}
+
+
 module.exports = {
     CreatePost,
     GetPostInfoById,
-    GetAllPostByUser
+    GetAllPostByUser,
+    DeletePost
 };
