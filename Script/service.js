@@ -57,14 +57,14 @@ function CreatePostObj(postURN, accessToken, userURN, avgTime) {
 
 async function StartReactionAndComment({ postObj }) {
     console.log("Start Reaction and Comments");
-    console.log(postObj)
+    console.log(postObj.length)
     for (const post of postObj) {
         console.log(post)
-        setTimeout(async () => {
-            let reaction = await AddReactionToPost(post);
-            let comment = await AddCommentToPost(post);
-            // MaintainPostData(reaction, comment, post.postURN);
-        }, post.avgTime);
+        // setTimeout(async () => {
+            AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
+            AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
+            console.log("Reaction and Comment added successfully 🎉");
+        // }, post.avgTime);
     }
 
     console.log("End Reaction and Comments");
