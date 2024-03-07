@@ -1,29 +1,7 @@
+const cron = require('node-cron');
 const { AddReactionToPost, AddCommentToPost } = require(".");
 const Post = require("../Model/Post.Model");
 
-
-
-
-function ReadyForReactionAndComment({ urn, users, avgTime }) {
-    let postArray = [];
-    let timeSum = 0;
-
-    // Check if avgTime is a string before splitting
-    if (typeof avgTime === 'string') {
-        let [min, max] = avgTime.split(':');
-        for (let i = 0; i < users.length; i++) {
-            avgTime = Math.floor(Math.random() * (max - min) + min) + timeSum;
-            timeSum += avgTime;
-            let postObj = CreatePostObj(urn, users[i].linkedIn_access_token, users[i].userURN, avgTime);
-            postArray.push(postObj);
-        }
-    } else {
-        // Handle the case where avgTime is not a string
-        console.error('avgTime must be a string in the format "min:max"');
-    }
-
-    StartReactionAndComment({ postObj: postArray }); // Uncomment this line
-}
 
 
 function CreatePostObj(postURN, accessToken, userURN, avgTime) {
@@ -56,50 +34,115 @@ function CreatePostObj(postURN, accessToken, userURN, avgTime) {
     return postObj;
 }
 
+function ReadyForReactionAndComment({ urn, users, avgTime }) {
+    let postArray = [];
+    let timeSum = 0;
+
+    // Check if avgTime is a string before splitting
+    if (typeof avgTime === 'string') {
+        let [min, max] = avgTime.split(':');
+        for (let i = 0; i < users.length; i++) {
+            avgTime = Math.floor(Math.random() * (max - min) + min) + timeSum;
+            timeSum += avgTime;
+            let postObj = CreatePostObj(urn, users[i].linkedIn_access_token, users[i].userURN, avgTime);
+            postArray.push(postObj);
+        }
+    } else {
+        // Handle the case where avgTime is not a string
+        console.error('avgTime must be a string in the format "min:max"');
+    }
+
+    StartReactionAndComment({ postObj: postArray }); // Uncomment this line
+}
+
+
+
+
 // async function StartReactionAndComment({ postObj }) {
 //     console.log("Start Reaction and Comments");
 //     console.log(postObj.length)
 //     for (const post of postObj) {
 //         console.log(post)
-//         // setTimeout(async () => {
+//         setTimeout(async () => {
 //             AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
 //             AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
 //             console.log("Reaction and Comment added successfully 🎉");
-//         // }, post.avgTime);
+//         }, post.avgTime);
 //     }
 
 //     console.log("End Reaction and Comments");
 // }
 
 
+// async function StartReactionAndComment({ postObj }) {
+//     console.log("Start Reaction and Comments");
+//     console.log(postObj.length);
+
+//     for (const [index, post] of postObj.entries()) {
+//         console.log(post);
+
+//         try {
+//             const reactionResult = await AddReactionToPost(post);
+
+
+//             await delay(post.avgTime); // Wait for the specified time interval
+
+//             const commentResult = await AddCommentToPost(post);
+//             await MaintainPostData(reactionResult, commentResult, post.postURN);
+
+//             console.log("Reaction and Comment added successfully 🎉");
+//         } catch (error) {
+//             console.error("Error:", error);
+//         }
+//     }
+
+//     console.log("End Reaction and Comments");
+// }
+
+// function delay(ms) {
+//     return new Promise(resolve => setTimeout(resolve, ms));
+// }
+
+
+
+
+
 async function StartReactionAndComment({ postObj }) {
     console.log("Start Reaction and Comments");
     console.log(postObj.length);
 
-    for (const [index, post] of postObj.entries()) {
+    // Iterate over each post object
+    for (const post of postObj) {
         console.log(post);
-        
-        try {
-            const reactionResult = await AddReactionToPost(post);
-            
 
-            await delay(post.avgTime); // Wait for the specified time interval
-            
-            const commentResult = await AddCommentToPost(post);
-            await MaintainPostData(reactionResult, commentResult, post.postURN);
+        // Schedule the AddReactionToPost function
+        cron.schedule(`*/${post.avgTime} * * * *`, async () => {
+            try {
+                const reactionRes = await AddReactionToPost(post);
+                MaintainPostData(reactionRes, null, post.postURN);
+                console.log("Reaction added successfully 🎉");
+            } catch (error) {
+                console.error("Error adding reaction:", error);
+            }
+        });
 
-            console.log("Reaction and Comment added successfully 🎉");
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        // Schedule the AddCommentToPost function
+        cron.schedule(`*/${post.avgTime} * * * *`, async () => {
+            try {
+                const commentRes = await AddCommentToPost(post);
+                MaintainPostData(null, commentRes, post.postURN);
+                console.log("Comment added successfully 🎉");
+            } catch (error) {
+                console.error("Error adding comment:", error);
+            }
+        });
     }
 
     console.log("End Reaction and Comments");
 }
 
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
+
+
 
 
 
