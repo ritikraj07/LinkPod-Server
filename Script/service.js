@@ -6,14 +6,12 @@ const Post = require("../Model/Post.Model");
 
 function ReadyForReactionAndComment({ urn, users, avgTime }) {
     let postArray = [];
-    let timeSum = 0;
 
     // Check if avgTime is a string before splitting
     if (typeof avgTime === 'string') {
         let [min, max] = avgTime.split(':');
         for (let i = 0; i < users.length; i++) {
-            avgTime = Math.floor(Math.random() * (max - min) + min) + timeSum;
-            timeSum += avgTime;
+            avgTime = Math.floor(Math.random() * (max - min) + min);
             let postObj = CreatePostObj(urn, users[i].linkedIn_access_token, users[i].userURN, avgTime);
             postArray.push(postObj);
         }
