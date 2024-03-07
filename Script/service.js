@@ -55,19 +55,49 @@ function CreatePostObj(postURN, accessToken, userURN, avgTime) {
     return postObj;
 }
 
+// async function StartReactionAndComment({ postObj }) {
+//     console.log("Start Reaction and Comments");
+//     console.log(postObj.length)
+//     for (const post of postObj) {
+//         console.log(post)
+//         // setTimeout(async () => {
+//             AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
+//             AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
+//             console.log("Reaction and Comment added successfully 🎉");
+//         // }, post.avgTime);
+//     }
+
+//     console.log("End Reaction and Comments");
+// }
+
+
 async function StartReactionAndComment({ postObj }) {
     console.log("Start Reaction and Comments");
-    console.log(postObj.length)
-    for (const post of postObj) {
-        console.log(post)
-        // setTimeout(async () => {
-            AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
-            AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
+    console.log(postObj.length);
+
+    for (const [index, post] of postObj.entries()) {
+        console.log(post);
+
+        try {
+            const reactionResult = await AddReactionToPost(post);
+            MaintainPostData(reactionResult, null, post.postURN);
+
+            await delay(post.avgTime); // Wait for the specified time interval
+
+            const commentResult = await AddCommentToPost(post);
+            MaintainPostData(null, commentResult, post.postURN);
+
             console.log("Reaction and Comment added successfully 🎉");
-        // }, post.avgTime);
+        } catch (error) {
+            console.error("Error:", error);
+        }
     }
 
     console.log("End Reaction and Comments");
+}
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 
