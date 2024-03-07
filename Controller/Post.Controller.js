@@ -80,12 +80,12 @@ async function ManagePost({ urn, pod_id, avgTime, created_by }) {
                 }
             }
         ]);
-        console.log(pod)
+        
 
         // Extract member_id from the result
         const member_id = pod.length > 0 ? pod[0].member_id : [];
 
-        console.log(member_id)
+        
         // Update reactions and comments for all members of the pod
         await User.updateMany(
             { _id: { $in: member_id } },

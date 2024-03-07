@@ -50,7 +50,8 @@ function CreatePostObj(postURN, accessToken, userURN, avgTime) {
     ];
 
     postObj.comment = comments[Math.floor(Math.random() * comments.length)];
-    postObj.reactionType = reactions[Math.floor(Math.random() * reactions.length)];
+    // postObj.reactionType = reactions[Math.floor(Math.random() * reactions.length)];
+    postObj.reactionType = 'LIKE';
 
     return postObj;
 }
@@ -82,10 +83,10 @@ async function StartReactionAndComment({ postObj }) {
             const reactionResult = await AddReactionToPost(post);
             
 
-            await delay(10000); // Wait for the specified time interval
+            await delay(post.avgTime); // Wait for the specified time interval
             
             const commentResult = await AddCommentToPost(post);
-             MaintainPostData(reactionResult, commentResult, post.postURN);
+            await MaintainPostData(reactionResult, commentResult, post.postURN);
 
             console.log("Reaction and Comment added successfully 🎉");
         } catch (error) {
