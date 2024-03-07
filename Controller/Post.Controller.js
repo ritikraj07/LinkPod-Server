@@ -16,17 +16,9 @@ const CheckIsPostExist = async (urn) => {
 
 const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:10000", user }) => {
     try {
-        if (await CheckIsPostExist(urn)) {
-            return {
-                status: false,
-                message: 'Post already exists',
-                data: null
-            };
-        }
-        console.log(user)
 
         let response = await AddCommentToPost({ postURN: urn, accessToken: user.linkedIn_access_token, userURN: user.userURN, comment: "#cfbf" });
-        console.log("====>",response)
+
         if (!response.status) {
             // Check if response data contains the expected error message
             const errorMessage = response.data.message || '';
@@ -38,25 +30,27 @@ const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:1000
 
                 urn = actualUrn;
                 // Re-check if the post exists with the swapped urn
-                if (await CheckIsPostExist(urn)) {
-                    // Post now exists with the correct urn
-                    return {
-                        status: false,
-                        message: 'Post already exists',
-                        data: null
-                    };
-                }
+
             }
             return response;
         }
 
-        const post = await Post.create({ title, urn, created_by });
-        ManagePost({ title, urn, created_by, pod_id, avgTime });
+        if (await CheckIsPostExist(urn)) {
+            // Post now exists with the correct urn
+            return {
+                status: false,
+                message: 'Post already exists',
+                data: null
+            };
+        }
+
+        await Post.create({ title, urn, created_by });
+        ManagePost({urn, created_by, pod_id, avgTime });
 
         return {
             status: true,
             message: 'Post added successfully 🎉',
-            data: post
+            data: null
         };
     } catch (error) {
         return {
@@ -69,39 +63,48 @@ const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:1000
 
 
 async function ManagePost({ urn, pod_id, avgTime, created_by }) {
-    // Aggregate to exclude the created_by ID from the member_id array
-    const result = await Pod.aggregate([
-        {
-            $match: { _id: pod_id }
-        },
-        {
-            $project: {
-                member_id: {
-                    $filter: {
-                        input: "$member_id",
-                        as: "member",
-                        cond: { $ne: ["$$member", created_by] }
+    try {
+        // Aggregate to exclude the created_by ID from the member_id array
+        const pod = await Pod.aggregate([
+            { $match: { $expr: { $eq: ['$_id', { $toObjectId: pod_id }] } } },
+            {
+                $project: {
+                    member_id: {
+                        $filter: {
+                            input: "$member_id",
+                            as: "member",
+                            cond: { $ne: ["$$member", created_by] }
+                        }
                     }
                 }
             }
-        }
-    ]).exec();
+        ]);
+        
 
-    // Extract member_id from the result
-    const member_id = result.length > 0 ? result[0].member_id : [];
+        // Extract member_id from the result
+        const member_id = pod.length > 0 ? pod[0].member_id : [];
 
-    // Update reactions and comments for all members of the pod
-    await User.updateMany({ _id: { $in: member_id } }, { $inc: { reactions: 1, comments: 1 } });
+        // Update reactions and comments for all members of the pod
+        await User.updateMany(
+            { _id: { $in: member_id } },
+            { $inc: { reactions: 1, comments: 1 } }
+        );
 
-    // Fetch userURN for the top 20 users with the least reactions
-    const users = await User.find({ _id: { $in: member_id } }, { userURN: 1, linkedIn_access_token: 1 })
-        .sort({ reactions: 1 })
-        .limit(20)
-        .lean();
+        // Fetch userURN for the top 20 users with the least reactions
+        const users = await User.find({ _id: { $in: member_id } }, { userURN: 1, linkedIn_access_token: 1 })
+            .sort({ reactions: 1 })
+            .limit(20)
+            .lean();
 
-    // Add reactions and comments to the post
-    ReadyForReactionAndComment({ urn, users, avgTime });
+        // Add reactions and comments to the post
+        ReadyForReactionAndComment({ urn, users, avgTime });
+    } catch (error) {
+        console.error('Error in ManagePost:', error);
+        // Handle error appropriately
+        throw error;
+    }
 }
+
 
 
 
@@ -111,14 +114,14 @@ async function GetPostInfoById(id) {
         let post = await Post.findById(id)
         return {
             status: true,
-            message:"success",
+            message: "success",
             data: post
         }
 
-     } catch (error) {
+    } catch (error) {
         return {
             status: false,
-            message:'Internal Server Error',
+            message: 'Internal Server Error',
             data: error
         }
     }
@@ -129,7 +132,7 @@ async function GetAllPostByUser(id) {
         let post = await Post.find({ created_by: id })
         return {
             status: true,
-            message:"success",
+            message: "success",
             data: post
         }
     }
