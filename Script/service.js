@@ -6,12 +6,14 @@ const Post = require("../Model/Post.Model");
 
 function ReadyForReactionAndComment({ urn, users, avgTime }) {
     let postArray = [];
+    let timeSum = 0;
 
     // Check if avgTime is a string before splitting
     if (typeof avgTime === 'string') {
         let [min, max] = avgTime.split(':');
         for (let i = 0; i < users.length; i++) {
-            avgTime = Math.floor(Math.random() * (max - min) + min);
+            avgTime = Math.floor(Math.random() * (max - min) + min) + timeSum;
+            timeSum += avgTime;
             let postObj = CreatePostObj(urn, users[i].linkedIn_access_token, users[i].userURN, avgTime);
             postArray.push(postObj);
         }
@@ -48,8 +50,7 @@ function CreatePostObj(postURN, accessToken, userURN, avgTime) {
     ];
 
     postObj.comment = comments[Math.floor(Math.random() * comments.length)];
-    // postObj.reactionType = reactions[Math.floor(Math.random() * reactions.length)];
-    postObj.reactionType = 'LIKE';
+    postObj.reactionType = reactions[Math.floor(Math.random() * reactions.length)];
 
     return postObj;
 }
@@ -76,15 +77,15 @@ async function StartReactionAndComment({ postObj }) {
 
     for (const [index, post] of postObj.entries()) {
         console.log(post);
-
+        
         try {
             const reactionResult = await AddReactionToPost(post);
-            MaintainPostData(reactionResult, null, post.postURN);
+            
 
-            await delay(post.avgTime); // Wait for the specified time interval
-
+            await delay(10000); // Wait for the specified time interval
+            
             const commentResult = await AddCommentToPost(post);
-            MaintainPostData(null, commentResult, post.postURN);
+             MaintainPostData(reactionResult, commentResult, post.postURN);
 
             console.log("Reaction and Comment added successfully 🎉");
         } catch (error) {
