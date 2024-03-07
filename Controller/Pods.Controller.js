@@ -200,9 +200,26 @@ const searchPods = async (searchTerm) => {
 };
 
 
+const AllPods = async () => {
+    try {
+        const allPods = await Pod.find().sort({ member_count: 1 }).limit(20)
+        return {
+            status: true,
+            message: 'success',
+            data: allPods
+        }
+    }catch(error){
+        return {
+            status: false,
+            message: 'Server Error!',
+            data: error
+        }
+    }
+}
+
 module.exports = {
     CreatePod, JoinPod,
     DeletePod, RemoveMemberFromPod,
     LeavePod, EditNameOrDesOfPod,
-    searchPods
+    searchPods, AllPods
 }
