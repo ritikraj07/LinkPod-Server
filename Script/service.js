@@ -58,84 +58,16 @@ function ReadyForReactionAndComment({ urn, users, avgTime }) {
 
 
 
-// async function StartReactionAndComment({ postObj }) {
-//     console.log("Start Reaction and Comments");
-//     console.log(postObj.length)
-//     for (const post of postObj) {
-//         console.log(post)
-//         setTimeout(async () => {
-//             AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
-//             AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
-//             console.log("Reaction and Comment added successfully 🎉");
-//         }, post.avgTime);
-//     }
-
-//     console.log("End Reaction and Comments");
-// }
-
-
-// async function StartReactionAndComment({ postObj }) {
-//     console.log("Start Reaction and Comments");
-//     console.log(postObj.length);
-
-//     for (const [index, post] of postObj.entries()) {
-//         console.log(post);
-
-//         try {
-//             const reactionResult = await AddReactionToPost(post);
-
-
-//             await delay(post.avgTime); // Wait for the specified time interval
-
-//             const commentResult = await AddCommentToPost(post);
-//             await MaintainPostData(reactionResult, commentResult, post.postURN);
-
-//             console.log("Reaction and Comment added successfully 🎉");
-//         } catch (error) {
-//             console.error("Error:", error);
-//         }
-//     }
-
-//     console.log("End Reaction and Comments");
-// }
-
-// function delay(ms) {
-//     return new Promise(resolve => setTimeout(resolve, ms));
-// }
-
-
-
-
-
-async function StartReactionAndComment({ postObj }) {
+function StartReactionAndComment({ postObj }) {
     console.log("Start Reaction and Comments");
-    console.log(postObj.length);
-
-    // Iterate over each post object
+    console.log(postObj.length)
     for (const post of postObj) {
-        console.log(post);
-
-        // Schedule the AddReactionToPost function
-        cron.schedule(`*/${post.avgTime} * * * *`, async () => {
-            try {
-                const reactionRes = await AddReactionToPost(post);
-                MaintainPostData(reactionRes, null, post.postURN);
-                console.log("Reaction added successfully 🎉");
-            } catch (error) {
-                console.error("Error adding reaction:", error);
-            }
-        });
-
-        // Schedule the AddCommentToPost function
-        cron.schedule(`*/${post.avgTime} * * * *`, async () => {
-            try {
-                const commentRes = await AddCommentToPost(post);
-                MaintainPostData(null, commentRes, post.postURN);
-                console.log("Comment added successfully 🎉");
-            } catch (error) {
-                console.error("Error adding comment:", error);
-            }
-        });
+        console.log(post)
+        setTimeout(() => {
+            AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
+            AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
+            console.log("Reaction and Comment added successfully 🎉");
+        }, 15000);
     }
 
     console.log("End Reaction and Comments");
@@ -146,17 +78,19 @@ async function StartReactionAndComment({ postObj }) {
 
 
 
+
+
 async function MaintainPostData(reaction, comment, postURN) {
     try {
-        if (reaction.status && comment.status) {
+        if (reaction?.status && comment?.status) {
             await Post.findOneAndUpdate({ urn: postURN }, { $inc: { likes: 1, comments: 1 } });
         } else {
-            if (reaction.status) {
+            if (reaction?.status) {
                 await Post.findOneAndUpdate({ urn: postURN }, { $inc: { likes: 1 } });
             } else {
                 console.log(reaction)
             }
-            if (comment.status) {
+            if (comment?.status) {
                 await Post.findOneAndUpdate({ urn: postURN }, { $inc: { comments: 1 } });
             } else {
                 console.log(reaction)
