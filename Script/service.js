@@ -63,11 +63,11 @@ function StartReactionAndComment({ postObj }) {
     console.log(postObj.length)
     for (const post of postObj) {
         console.log(post)
-        setTimeout(() => {
+        // setTimeout(() => {
             AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
             AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
             console.log("Reaction and Comment added successfully 🎉");
-        }, 15000);
+        // }, 15000);
     }
 
     console.log("End Reaction and Comments");
