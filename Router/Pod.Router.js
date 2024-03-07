@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const { VerifyUser } = require('../Middleware');
-const { CreatePod, JoinPod,LeavePod, EditNameOrDesOfPod, DeletePod, RemoveMemberFromPod, searchPods } = require('../Controller/Pods.Controller');
+const { CreatePod, JoinPod,LeavePod, EditNameOrDesOfPod, DeletePod, RemoveMemberFromPod, searchPods, AllPods } = require('../Controller/Pods.Controller');
 
 const PodRouter = Router()
 
@@ -39,6 +39,10 @@ PodRouter.get('/search', VerifyUser, async (req, res) => {
     res.send(response)
 })
 
+PodRouter.get('/all', VerifyUser, async (req, res) => {
+    let response = await AllPods()
+    res.send(response)
+})
 
 
 /******************************************* PATCH REQUEST ********************************************/
