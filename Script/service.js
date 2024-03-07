@@ -48,7 +48,8 @@ function CreatePostObj(postURN, accessToken, userURN, avgTime) {
     ];
 
     postObj.comment = comments[Math.floor(Math.random() * comments.length)];
-    postObj.reactionType = reactions[Math.floor(Math.random() * reactions.length)];
+    // postObj.reactionType = reactions[Math.floor(Math.random() * reactions.length)];
+    postObj.reactionType = 'LIKE';
 
     return postObj;
 }
