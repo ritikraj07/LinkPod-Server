@@ -6,10 +6,10 @@ const PostRouter = Router();
 
 /****************************************POST REQUESTS***********************************************/
 PostRouter.post('/create', VerifyUser, CheckPostCredentials, async (req, res) => {
-    let { title, description, urn, pod_id, avgTime } = req.body
+    let { title, urn, pod_id, avgTime } = req.body
     let created_by = req._id
     let user = req.user
-    let response = await CreatePost({ title, description, urn, created_by, pod_id, avgTime, user })
+    let response = await CreatePost({ title, urn, created_by, pod_id, avgTime, user })
     res.send(response)
 
 });

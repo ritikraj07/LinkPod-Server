@@ -42,7 +42,7 @@ const VerifyUser = async (req, res, next) => {
 const CheckPostCredentials = async (req, res, next) => {
     try {
         const id = req._id
-        const user = await User.findById(id);
+        const user = await User.findById(id).select("+linkedIn_access_token")
         if (!user) {
             return res.status(401).send({
                 status: false,

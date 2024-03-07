@@ -23,8 +23,10 @@ const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:1000
                 data: null
             };
         }
+        console.log(user)
 
         let response = await AddCommentToPost({ postURN: urn, accessToken: user.linkedIn_access_token, userURN: user.userURN, comment: "#cfbf" });
+        console.log("====>",response)
         if (!response.status) {
             // Check if response data contains the expected error message
             const errorMessage = response.data.message || '';
