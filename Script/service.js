@@ -60,27 +60,14 @@ function ReadyForReactionAndComment({ urn, users, avgTime }) {
 function StartReactionAndComment({ postObj }) {
     console.log("Start Reaction and Comments");
     console.log(postObj.length)
-    let i = 0;
-    // for (const post of postObj) {
-    //     this.setTimeout(() => {
-    const task = cron.schedule('*/30 * * * * * *', () => {
-        if (i < postObj.length) {
-            i++;
-            console.log(new Date());
-
-            console.log(postObj[i])
-            AddReactionToPost(postObj[i]).then((res) => { MaintainPostData(res, null, postObj[i].postURN) });
-            AddCommentToPost(postObj[i]).then((res) => { MaintainPostData(null, res, postObj[i].postURN) });
-            console.log("Reaction and Comment added successfully 🎉");
-        } else {
-            task.stop(); // Stop the cron job when i == j
-            return
-        }
-        console.log(i);
-    });
-  
-        // }, postObj.avgTime);
-    // }
+    for (const post of postObj) {
+        // console.log(post)
+        // setTimeout(() => {
+        AddReactionToPost(post).then((res) => { MaintainPostData(res, null, post.postURN) });
+        AddCommentToPost(post).then((res) => { MaintainPostData(null, res, post.postURN) });
+        console.log("Reaction and Comment added successfully 🎉");
+        // }, 15000);
+    }
 
     console.log("End Reaction and Comments");
 }
@@ -109,7 +96,7 @@ async function MaintainPostData(reaction, comment, postURN) {
             }
         }
     } catch (error) {
-        console.log(error)
+        throw new Error("Error in MaintainPostData Server Error\n" + error);
     }
 
 
