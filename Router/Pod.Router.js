@@ -35,12 +35,13 @@ PodRouter.post('/join/:pod_id', VerifyUser, async (req, res) => {
 
 PodRouter.get('/search', VerifyUser, async (req, res) => {
     let { query } = req.query
+    console.log(query)
     let response = await searchPods(query)
     res.send(response)
 })
 
 PodRouter.get('/all', VerifyUser, async (req, res) => {
-    let response = await AllPods()
+    let response = await AllPods(req._id)
     res.send(response)
 })
 

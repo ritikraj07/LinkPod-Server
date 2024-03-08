@@ -67,7 +67,7 @@ const LoginUser = async ({ email, password }) => {
     try {
         // Find the user with the provided email
         const user = await User.findOne({ email }).select('+password');
-        console.log(user)
+        // console.log(user)
 
         // If user does not exist, return error
         if (!user) {

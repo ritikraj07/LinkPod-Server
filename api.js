@@ -22,6 +22,7 @@ const corsOptions = {
     optionSuccessStatus: 200,
 };
 app.use(cors());
+app.set('trust proxy', true);
 
 // Configure headers for CORS
 app.use(function (req, res, next) {

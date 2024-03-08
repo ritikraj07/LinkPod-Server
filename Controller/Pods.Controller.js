@@ -26,7 +26,7 @@ const CreatePod = async ({ _id, user_name, description, pod_name }) => {
 const JoinPod = async ({ _id, pod_id }) => {
     try {
         let pod = await Pod.findById(pod_id).select('+member_id');
-     
+
         if (!pod) {
             return {
                 status: false,
@@ -142,21 +142,21 @@ const LeavePod = async (_id, member_id) => {
 };
 const EditNameOrDesOfPod = async (admin_id, _id, name, description) => {
     try {
-        
+
         const updatedPod = await Pod.findOneAndUpdate(
-            { _id, admin_id }, 
-            { $set: { name, description } }, 
+            { _id, admin_id },
+            { $set: { name, description } },
             { new: true }
         )
 
-        console.log(updatedPod)
+        // console.log(updatedPod)
         if (!updatedPod) {
             return {
                 status: false,
                 message: 'No pod found with the given id or you are not the admin of this pod'
             };
         }
-        
+
         return {
             status: true,
             message: 'Pod details updated successfully',
@@ -200,18 +200,21 @@ const searchPods = async (searchTerm) => {
 };
 
 
-const AllPods = async () => {
+const AllPods = async (id) => {
     try {
-        const allPods = await Pod.find().sort({ member_count: 1 }).limit(20)
+
+        const allPods = await Pod.find({ $or: [{ admin_id: id }, { member_id: { $in: [id] } }] }).sort({ member_count: -1 }).limit(20);
+
         return {
             status: true,
             message: 'success',
             data: allPods
         }
-    }catch(error){
+    } catch (error) {
+        console.log(error)
         return {
             status: false,
-            message: 'Server Error!',
+            message: 'Server Error! All pods',
             data: error
         }
     }
