@@ -203,7 +203,7 @@ const searchPods = async (searchTerm) => {
 const AllPods = async (id) => {
     try {
 
-        const allPods = await Pod.find({ $or: [{ admin_id: id }, { member_id: { $in: [id] } }] }).sort({ member_count: -1 }).limit(20);
+        const allPods = await Pod.find({ $nor: [{ admin_id: id }, { member_id: { $in: [id] } }] }).sort({ member_count: -1 }).limit(20);
 
         return {
             status: true,
