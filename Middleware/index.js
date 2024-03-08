@@ -5,16 +5,16 @@ const extractIdFromLinkedInUrl = require("../Script/ExtractURN");
 const VerifyUser = async (req, res, next) => {
     try {
         const token = req?.cookies?.token || req.header("Authorization")?.replace("Bearer ", "");
-        
+
         if (!token) {
-            return res.status(401).send({
+            return res.send({
                 status: false,
                 message: 'Access token is required'
             });
         }
 
         const isValid = verifyToken(token)
-        
+
 
         if (isValid.status) {
             req._id = isValid.payload.user_id;
@@ -29,10 +29,10 @@ const VerifyUser = async (req, res, next) => {
             })
         }
     } catch (error) {
-        res.status(500).send({
+        res.send({
             status: false,
             message: 'Server or Verification Error!',
-            data: error.message // Optionally, include the error message
+            data: error // Optionally, include the error message
         });
 
     }
@@ -51,7 +51,7 @@ const CheckPostCredentials = async (req, res, next) => {
             })
         }
         let no_of_left = user.postCount;
-        
+
         if (no_of_left <= 0) {
             return res.send({
                 status: false,
@@ -71,8 +71,8 @@ const CheckPostCredentials = async (req, res, next) => {
         req.body.urn = post_urn;
         req.user = user;
         next();
-    }catch(error){
-        res.status(500).send({
+    } catch (error) {
+        res.send({
             status: false,
             message: 'Server or Verification Error!',
             data: error

@@ -16,7 +16,7 @@ const CheckIsPostExist = async (urn) => {
 
 const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:10000", user }) => {
     try {
-
+        
         let response = await AddCommentToPost({ postURN: urn, accessToken: user.linkedIn_access_token, userURN: user.userURN, comment: "#cfbf" });
 
         if (!response.status) {
