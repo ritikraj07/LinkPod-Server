@@ -33,10 +33,11 @@ const AddReactionToPost = async ({ postURN, accessToken, userURN, reactionType =
             data: response.data
         };
     } catch (error) {
+        
         return {
             status: false,
             message: 'Error adding reaction to post',
-            data: error.response ? error.response.data : error.message
+            data: error
         };
     }
 };
@@ -68,11 +69,11 @@ const AddCommentToPost = async ({ postURN, accessToken, userURN, comment }) => {
             data: response.data
         };
     } catch (error) {
+        console.log(error)
         return {
             status: false,
             message: 'Error adding comment to post',
-            error,
-            data: error.response ? error.response.data : error.message
+            data: error
         };
     }
 };

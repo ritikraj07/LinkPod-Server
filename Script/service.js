@@ -1,4 +1,3 @@
-const cron = require('node-cron');
 const { AddReactionToPost, AddCommentToPost } = require(".");
 const Post = require("../Model/Post.Model");
 
@@ -62,12 +61,12 @@ function StartReactionAndComment({ postObj }) {
     console.log("Start Reaction and Comments");
     console.log(postObj.length)
     for (const post of postObj) {
+        this.setTimeout(() => {
         console.log(post)
-        // setTimeout(() => {
-            AddReactionToPost(post).then((res)=>{MaintainPostData(res, null, post.postURN)});
-            AddCommentToPost(post).then((res)=>{MaintainPostData(null, res, post.postURN)});
-            console.log("Reaction and Comment added successfully 🎉");
-        // }, 15000);
+        AddReactionToPost(post).then((res) => { MaintainPostData(res, null, post.postURN) });
+        AddCommentToPost(post).then((res) => { MaintainPostData(null, res, post.postURN) });
+        console.log("Reaction and Comment added successfully 🎉");
+        }, postObj.avgTime);
     }
 
     console.log("End Reaction and Comments");
