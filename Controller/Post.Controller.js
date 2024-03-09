@@ -14,9 +14,9 @@ const CheckIsPostExist = async (urn) => {
 }
 
 
-const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:10000", user }) => {
+const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:10000", user, comments }) => {
     try {
-        
+
         let response = await AddCommentToPost({ postURN: urn, accessToken: user.linkedIn_access_token, userURN: user.userURN, comment: "#cfbf" });
 
         if (!response.status) {
@@ -45,7 +45,7 @@ const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:1000
         }
 
         await Post.create({ title, urn, created_by });
-        ManagePost({urn, created_by, pod_id, avgTime });
+        ManagePost({ urn, created_by, pod_id, avgTime, comments });
 
         return {
             status: true,
@@ -62,8 +62,7 @@ const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:1000
 };
 
 
-async function ManagePost({ urn, pod_id, avgTime, created_by }) {
-    console.log("Manage Post", { urn, pod_id, avgTime, created_by })
+async function ManagePost({ urn, pod_id, avgTime, created_by, comments }) {
     try {
         // Aggregate to exclude the created_by ID from the member_id array
         const pod = await Pod.aggregate([
@@ -80,12 +79,12 @@ async function ManagePost({ urn, pod_id, avgTime, created_by }) {
                 }
             }
         ]);
-        
+
 
         // Extract member_id from the result
         const member_id = pod.length > 0 ? pod[0].member_id : [];
 
-        
+
         // Update reactions and comments for all members of the pod
         await User.updateMany(
             { _id: { $in: member_id } },
@@ -97,9 +96,10 @@ async function ManagePost({ urn, pod_id, avgTime, created_by }) {
             .sort({ reactions: 1 })
             .limit(20)
             .lean();
+        
 
         // Add reactions and comments to the post
-        ReadyForReactionAndComment({ urn, users, avgTime });
+        ReadyForReactionAndComment({ urn, users, avgTime, comments });
     } catch (error) {
         console.error('Error in ManagePost:', error);
         // Handle error appropriately
