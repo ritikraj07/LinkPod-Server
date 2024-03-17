@@ -7,7 +7,8 @@ const PostSchema = new Schema({
     },
     urn: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     created_by: {
         type: Schema.Types.ObjectId,
@@ -21,6 +22,14 @@ const PostSchema = new Schema({
     comments: {
         type: Number,
         default: 0
+    },
+    post_url: {
+        type: String,
+        required: true,
+    },
+    pod_id: {
+        type: Schema.Types.ObjectId,
+        ref: 'Pod',
     }
 }, {
     timestamps: true

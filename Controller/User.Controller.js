@@ -1,8 +1,11 @@
 const bcrypt = require('bcrypt');
 const User = require("../Model/User.Model");
-const { generateRefreshToken } = require('./Token.Controller');
 const Pod = require('../Model/Pod.Model');
 const { GetAllPostByUser } = require('./Post.Controller');
+const { GenerateOTP } = require('../Script/RandomOTP');
+const { SendOTPforPasswordReset } = require('../Script/mailController');
+
+const emailMatchedWithOTP = {}
 
 const CreateUser = async ({
     email_id, email, password, iat, exp, sub, name,
@@ -137,9 +140,9 @@ const GetUserById = async (id) => {
             picture: 1,
             linkedIn_email: 1,
         }).exec();
-       
 
-        
+
+
         // If user does not exist, return error
         if (!user) {
             return {
@@ -216,11 +219,151 @@ const GetUserById = async (id) => {
 
 
 
+const ResetPassword = async ({ email, newPassword }) => {
+    try {
+        // Find the user by email
+        const user = await User.findOne({ email });
+        const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+        // If user does not exist, return error
+        if (!user) {
+            return {
+                status: false,
+                message: 'No user exists',
+                data: null
+            }
+        }
+
+        // Update the user's password
+
+        user.password = hashedPassword;
+
+        await user.save();
+
+        return {
+            status: true,
+            message: 'success',
+            data: user
+        }
+
+    } catch (error) {
+        return {
+            status: false,
+            message: 'Server Error!',
+            data: error
+        }
+    }
+}
+
+
+const ForgotPassword = async ({ email }) => {
+    try {
+        // Find the user by email
+        const user = await User.findOne({ email });
+
+        // If user does not exist, return error
+        if (!user) {
+            return {
+                status: false,
+                message: 'No user exists 😒',
+                data: null
+            }
+        }
+
+        let otp = GenerateOTP();
+
+        emailMatchedWithOTP[user.email] = otp;
+
+        await SendOTPforPasswordReset({ user, otp });
+        return {
+            status: true,
+            message: 'otp is sent',
+            data: null
+        }
+
+    } catch (error) {
+        return {
+            status: false,
+            message: 'Server Error!',
+            data: error
+        }
+    }
+}
+
+
+const VerifyOTP = async ({ email, otp }) => {
+    try {
+        if (emailMatchedWithOTP[email] === otp) {
+            delete emailMatchedWithOTP[email];
+            let user = await User.findOne({ email });
+            return {
+                status: true,
+                message: 'otp is correct',
+                data: user
+            }
+        } else if (emailMatchedWithOTP[email] === undefined) {
+            return {
+                status: false,
+                message: 'otp is not sent to this email',
+                data: null
+            }
+            
+        }
+        
+        else {
+            return {
+                status: false,
+                message: 'otp is incorrect',
+                data: null
+            }
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: 'Server Error!',
+            data: error
+        }
+    }
+}
 
 
 
-module.exports = { CreateUser, LoginUser, GetUserById };
+const ChangePassword = async ({ email, new_password }) => {
+    try {
+        let user = await User.findOne({ email });
+        if (!user) {
+            
+            return {
+                status: false,
+                message: 'No user exists 😒',
+                data: null
+            }
+
+        }
+        const hashedPassword = await bcrypt.hash(new_password, 10);
+        user.password = hashedPassword;
+        await user.save();
+        return {
+            status: true,
+            message: 'success',
+            data: user
+        }
+
+     } catch (error) {
+        return {
+            status: false,
+            message: 'Server Error!',
+            data: error
+        }
+    }
+}
+
+
+module.exports = {
+    CreateUser, LoginUser,
+    GetUserById, ResetPassword,
+    ForgotPassword, VerifyOTP, ChangePassword
+};
 
 
 
-// const podWithMemberId = await Pod.findOne({ _id: podId }).select('+member_id');

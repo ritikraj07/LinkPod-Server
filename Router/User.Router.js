@@ -1,13 +1,11 @@
 const { Router } = require("express")
 const { generateAccessToken } = require("../Controller/Token.Controller");
-const { CreateUser, LoginUser, GetUserById } = require("../Controller/User.Controller");
+const { CreateUser, LoginUser, GetUserById, ForgotPassword, VerifyOTP, ChangePassword } = require("../Controller/User.Controller");
 const { Auth, Redirect } = require("../Script/auth");
 const jwt = require('jsonwebtoken');
 const config = require("../Config");
 const { VerifyUser } = require("../Middleware");
-
 const userRouter = Router()
-
 
 
 /*****************************************POST REQUESTS***********************************************/
@@ -49,6 +47,35 @@ userRouter.post('/login', async (req, res) => {
     res.send({ ...response, token, isLogin: true });
 });
 
+
+userRouter.post('/forgot-password', async (req, res) => { 
+    let { email } = req.body
+    let response = await ForgotPassword({ email })
+    res.send(response)
+})
+
+userRouter.post('/verify-otp', async (req, res) => {
+    let { email, otp } = req.body
+    let response = await VerifyOTP({ email, otp })
+    if (response.status) {
+        let token = generateAccessToken({ user_id: response.data._id })
+        res.cookie('isLogin_test', true, {
+            httpOnly: true,
+            expires: new Date(Date.now() + 3600000),
+            secure: true, // Change to true
+            sameSite: "none",
+            domain: "https://linkpod.onrender.com",
+        })
+
+        res.cookie('token', token, {
+            httpOnly: true,
+            expires: new Date(Date.now() + 3600000),
+            secure: true, // Enable this if your application uses HTTPS
+            sameSite: 'strict' // Adjust as needed for your application's requirements
+        })
+    }
+    res.send(response)
+})
 
 /*****************************************GET REQUESTS***********************************************/
 
@@ -127,6 +154,23 @@ userRouter.get('/getdata', VerifyUser, async (req, res) => {
 })
 
 
+
+/*****************************************PATCH REQUESTS***********************************************/
+
+
+
+userRouter.patch('/reset-password',VerifyUser, async (req, res) => {
+    let { email, new_password } = req.body
+    let response = await ChangePassword({ email, new_password })
+    res.send(response)   
+    
+})
+
+
+module.exports = userRouter
+
+/**
+ * 
 userRouter.get('/check-cookie', async (req, res) => {
     // Set the secure flag to true for SameSite=None
     res.cookie('isLogin', true, {
@@ -140,12 +184,6 @@ userRouter.get('/check-cookie', async (req, res) => {
         status: true,
     });
 });
-
-
-
-module.exports = userRouter
-
-/**
  * const cookies = document.cookie.split(';').reduce((acc, cookie) => {
     const [name, value] = cookie.trim().split('=');
     acc[name] = value;

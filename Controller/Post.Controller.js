@@ -14,10 +14,15 @@ const CheckIsPostExist = async (urn) => {
 }
 
 
-const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:10000", user, comments }) => {
+const CreatePost = async ({post_url, title, urn, created_by, pod_id, avgTime = "6000:10000", user, comments }) => {
     try {
-
-        let response = await AddCommentToPost({ postURN: urn, accessToken: user.linkedIn_access_token, userURN: user.userURN, comment: "#cfbf" });
+        console.log("Create Post", post_url, title, urn, created_by, pod_id, avgTime, user, comments)
+        let response = await AddCommentToPost({
+            postURN: urn,
+            accessToken: user.linkedIn_access_token,
+            userURN: user.userURN, comment: "#cfbr"
+        });
+        
 
         if (!response.status) {
             // Check if response data contains the expected error message
@@ -44,7 +49,7 @@ const CreatePost = async ({ title, urn, created_by, pod_id, avgTime = "6000:1000
             };
         }
 
-        await Post.create({ title, urn, created_by });
+        await Post.create({ title, urn, created_by, post_url, pod_id });
         ManagePost({ urn, created_by, pod_id, avgTime, comments });
 
         return {
@@ -168,9 +173,39 @@ async function DeletePost(id) {
 }
 
 
+
+async function SearchForPost(query) {
+    try {
+        let posts = await Post.find({
+            $or: [{ title: { $regex: query, $options: "i" } },
+                { urn: { $regex: query, $options: "i" } },
+                { postURN: { $regex: query, $options: "i" } }]
+        })
+        if(posts.length == 0){
+            return {
+                status: false,
+                message: "No post found",
+                data: null
+            }
+        }
+        return {
+            status: true,
+            message: "success",
+            data: posts
+        }
+    } catch (error) {
+        return {
+            status: false,
+            message: 'Internal Server Error',
+            data: error
+        }
+    }
+}
+
 module.exports = {
     CreatePost,
     GetPostInfoById,
     GetAllPostByUser,
-    DeletePost
+    DeletePost,
+    SearchForPost
 };
