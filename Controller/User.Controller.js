@@ -299,7 +299,14 @@ const VerifyOTP = async ({ email, otp }) => {
             return {
                 status: true,
                 message: 'otp is correct',
-                data: user
+                data: {
+                    _id: user._id,
+                    email: user.email,
+                    name: user.name,
+                    picture: user.picture,
+                    linkedIn_email: user.linkedIn_email,
+                    
+                }
             }
         } else if (emailMatchedWithOTP[email] === undefined) {
             return {

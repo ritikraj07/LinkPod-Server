@@ -57,8 +57,8 @@ userRouter.post('/forgot-password', async (req, res) => {
 userRouter.post('/verify-otp', async (req, res) => {
     let { email, otp } = req.body
     let response = await VerifyOTP({ email, otp })
+        let token = generateAccessToken({ user_id: response?.data?._id })
     if (response.status) {
-        let token = generateAccessToken({ user_id: response.data._id })
         res.cookie('isLogin_test', true, {
             httpOnly: true,
             expires: new Date(Date.now() + 3600000),
@@ -73,6 +73,9 @@ userRouter.post('/verify-otp', async (req, res) => {
             secure: true, // Enable this if your application uses HTTPS
             sameSite: 'strict' // Adjust as needed for your application's requirements
         })
+    }
+    if (token) {
+        response.token = token
     }
     res.send(response)
 })
