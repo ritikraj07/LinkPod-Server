@@ -105,22 +105,25 @@ class Mail {
      *
      * @return {void} Does not return anything.
      */
-    send() {
+    async send() {
         // Sends the email using the configured options.
         // The method uses the nodemailer transporter to send the email.
         // If an error occurres, logs the error.
         // If the email is sent successfully, logs the response from the server.
 
         // Sends the email using the mail options and logs the result.
-        transporter.sendMail(this.mailOptions, (error, info) => {
-            // If an error occurres, logs the error.
-            if (error) {
-                console.log(error);
-            } else {
-                // If the email is sent successfully, logs the response from the server.
-                console.log('Email sent: ' + info.response);
-            }
-        });
+
+        await new Promise((resolve, reject) => {
+            transporter.sendMail(this.mailOptions, (error, info) => {
+                if (error) {
+                    console.log(error);
+                    reject(error);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                    resolve(info.response);
+                }
+            });
+        })
     }
 
 }

@@ -5,11 +5,9 @@ const path = require('path');
 
 
 const SendOTPforPasswordReset = async ({ user, otp }) => {
-    console.log('log from SendOTPforPasswordReset', user, otp)
+    console.log('log from SendOTPforPasswordReset', otp)
     try { 
         const mail = new Mail();
-        mail.setSenderEmail(process.env.MAIL_SENDER);
-        mail.setCompanyName('LinkPod');
         mail.setTo(user.email);
         mail.setSubject('LinkPod - Password Reset');
 
@@ -23,7 +21,8 @@ const SendOTPforPasswordReset = async ({ user, otp }) => {
             html = html.replace('<span id="otpPlaceholder"></span>', otp);
             html = html.replace('<span id="user_name"></span>', user.name);
             mail.setHTML(html)
-            mail.send();
+            const mail_status = await mail.send()
+            console.log('mail_status', mail_status)
         })
     } catch (error) {
         console.log('error from SendOTPforPasswordReset', error)
