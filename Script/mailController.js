@@ -5,7 +5,7 @@ const path = require('path');
 
 
 const SendOTPforPasswordReset = async ({ user, otp }) => {
-    console.log('log from SendOTPforPasswordReset', otp)
+    console.log('log from SendOTPforPasswordReset', otp, user.email)
     try { 
         const mail = new Mail();
         mail.setTo(user.email);
@@ -21,8 +21,8 @@ const SendOTPforPasswordReset = async ({ user, otp }) => {
             html = html.replace('<span id="otpPlaceholder"></span>', otp);
             html = html.replace('<span id="user_name"></span>', user.name);
             mail.setHTML(html)
-            const mail_status = await mail.send()
-            console.log('mail_status', mail_status)
+            mail.send()
+            mail.send()
         })
     } catch (error) {
         console.log('error from SendOTPforPasswordReset', error)
