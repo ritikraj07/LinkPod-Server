@@ -110,20 +110,11 @@ class Mail {
      */
     async send() {
         try {
-            // const info = await new Promise((resolve, reject) => {
-                transporter.sendMail(this.mailOptions, (error, info) => {
-                    if (error) {
-                        console.error('Error sending email:', error);
-                        reject(error);
-                    } else {
-                        console.log('Email sent successfully:', info.response);
-                        resolve(info.response);
-                    }
-                });
-            // });
-            // return info;
+            const info = await transporter.sendMail(this.mailOptions);
+            console.log('Email sent successfully:', info.response);
+            return info.response; // Return the response for further processing if needed
         } catch (error) {
-            console.error('Failed to send email:', error);
+            console.error('Error sending email:', error);
             throw error; // Re-throw the error for the caller to handle
         }
     }
