@@ -3,8 +3,8 @@ const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
+    port: 465,
+    secure: true,
     auth: {
         user: process.env.MAIL_SENDER,
         pass: process.env.MAIL_PASS
@@ -106,25 +106,25 @@ class Mail {
      * @return {void} Does not return anything.
      */
     async send() {
-        // Sends the email using the configured options.
-        // The method uses the nodemailer transporter to send the email.
-        // If an error occurres, logs the error.
-        // If the email is sent successfully, logs the response from the server.
-
-        // Sends the email using the mail options and logs the result.
-
-        await new Promise((resolve, reject) => {
-            transporter.sendMail(this.mailOptions, (error, info) => {
-                if (error) {
-                    console.log(error);
-                    reject(error);
-                } else {
-                    console.log('Email sent: ' + info.response);
-                    resolve(info.response);
-                }
+        try {
+            const info = await new Promise((resolve, reject) => {
+                transporter.sendMail(this.mailOptions, (error, info) => {
+                    if (error) {
+                        console.error('Error sending email:', error);
+                        reject(error);
+                    } else {
+                        console.log('Email sent successfully:', info.response);
+                        resolve(info.response);
+                    }
+                });
             });
-        })
+            return info;
+        } catch (error) {
+            console.error('Failed to send email:', error);
+            throw error; // Re-throw the error for the caller to handle
+        }
     }
+
 
 }
 
