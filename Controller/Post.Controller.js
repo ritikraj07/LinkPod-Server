@@ -174,9 +174,10 @@ async function DeletePost(id) {
 
 
 
-async function SearchForPost(query) {
+async function SearchForPost(query, created_by) {
     try {
         let posts = await Post.find({
+            created_by: created_by,
             $or: [{ title: { $regex: query, $options: "i" } },
                 { urn: { $regex: query, $options: "i" } },
                 { post_url: { $regex: query, $options: "i" } }]

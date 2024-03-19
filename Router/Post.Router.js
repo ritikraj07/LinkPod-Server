@@ -29,8 +29,8 @@ PostRouter.get('/id/:id', VerifyUser, async (req, res) => {
 
 PostRouter.get('/search', VerifyUser, async (req, res) => {
     let { q } = req.query
-    console.log(q)
-    let response = await SearchForPost(q)
+    let created_by = req._id
+    let response = await SearchForPost(q, created_by)
     res.send(response)
 })
 
