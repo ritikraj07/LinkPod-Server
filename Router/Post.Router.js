@@ -21,7 +21,7 @@ PostRouter.post('/create', VerifyUser, CheckPostCredentials, async (req, res) =>
 
 /****************************************GET REQUESTS***********************************************/
 
-PostRouter.get('/:id', VerifyUser, async (req, res) => {
+PostRouter.get('/id/:id', VerifyUser, async (req, res) => {
     let id = req.params.id
     let response = await GetPostInfoById(id);
     res.send(response)
@@ -29,6 +29,7 @@ PostRouter.get('/:id', VerifyUser, async (req, res) => {
 
 PostRouter.get('/search', VerifyUser, async (req, res) => {
     let { q } = req.query
+    console.log(q)
     let response = await SearchForPost(q)
     res.send(response)
 })
@@ -40,7 +41,7 @@ PostRouter.delete('/:id', VerifyUser, async (req, res) => {
     let id = req.params.id
     let response = await DeletePost(id);
     res.send(response)
-    
+
 })
 
 

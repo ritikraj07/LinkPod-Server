@@ -179,7 +179,7 @@ async function SearchForPost(query) {
         let posts = await Post.find({
             $or: [{ title: { $regex: query, $options: "i" } },
                 { urn: { $regex: query, $options: "i" } },
-                { postURN: { $regex: query, $options: "i" } }]
+                { post_url: { $regex: query, $options: "i" } }]
         })
         if(posts.length == 0){
             return {
