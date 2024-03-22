@@ -21,17 +21,30 @@ const corsOptions = {
     // Add the following line to include the required headers for CORS
     optionSuccessStatus: 200,
 };
-app.use(cors());
+app.use(cors(corsOptions));
 app.set('trust proxy', true);
-
+app.use(require('express-status-monitor')())
 // Configure headers for CORS
-app.use(function (req, res, next) {
-    // res.setHeader('Access-Control-Allow-Origin', 'https://linkpod.onrender.com');
-    // Set Access-Control-Allow-Origin header to the requesting origin
-    res.header('Access-Control-Allow-Origin', req.headers.origin);
-    // Add the following line to allow sending additional headers
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-    next();
+app.use((req, res, next) => {
+    const allowedDomains = ['https://linkpod.onrender.com', 'https://extinct-duck-cap.cyclic.app/']; // List of allowed domains
+
+    const origin = req.headers.origin; // Get the origin from the request headers
+    console.log(origin, "origin")
+    // Check if the origin is in the list of allowed domains
+    if (allowedDomains.includes(origin)) {
+        // Set the Access-Control-Allow-Origin header to allow requests from the origin
+        res.setHeader('Access-Control-Allow-Origin', origin);
+        // Set other CORS headers as needed
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+        res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+        // Continue processing the request
+        next();
+    } else {
+        // Return an error response if the origin is not allowed
+        return res.status(403).json({ error: 'Forbidden: Origin not allowed' });
+    }
 });
 
 // Parse cookies and JSON bodies
@@ -66,6 +79,6 @@ let PORT = process.env.PORT || 8000;
 ConnectDatabase()
     .then(() => {
         app.listen(PORT);
-        console.log('Server Started at '+PORT);
+        console.log('Server Started at ' + PORT);
     })
     .catch((error) => console.log('Error==>', error));
