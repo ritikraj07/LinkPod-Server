@@ -27,9 +27,11 @@ app.use(require('express-status-monitor')())
 // Configure headers for CORS
 app.use((req, res, next) => {
     const allowedDomains = ['https://linkpod.onrender.com',
-        'https://extinct-duck-cap.cyclic.app', 'extinct-duck-cap.cyclic.app', 'linkpod.onrender.com']; // List of allowed domains
+        'https://extinct-duck-cap.cyclic.app',
+        'https://www.linkedin.com'
+    ];
 
-    const origin = req.headers.origin || req.headers.host ; // Get the origin from the request headers
+    const origin = req.headers.origin; // Get the origin from the request headers
     console.log(origin, "origin")
     // Check if the origin is in the list of allowed domains
     if (allowedDomains.includes(origin)) {
@@ -44,7 +46,7 @@ app.use((req, res, next) => {
         next();
     } else {
         // Return an error response if the origin is not allowed
-        return res.status(403).json({ error: 'Forbidden: Origin not allowed' });
+        return res.status(403).json({ error: 'Forbidden: Origin not allowed 😒' });
     }
 });
 
