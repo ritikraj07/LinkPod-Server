@@ -26,15 +26,21 @@ app.set('trust proxy', true);
 app.use(require('express-status-monitor')())
 // Configure headers for CORS
 app.use((req, res, next) => {
-    const allowedDomains = ['https://linkpod.onrender.com',
+    const allowedDomains = [
+        'https://linkpod.onrender.com',
         'https://extinct-duck-cap.cyclic.app',
         'https://www.linkedin.com'
     ];
 
     const origin = req.headers.origin; // Get the origin from the request headers
-    console.log(origin, "origin")
-    // Check if the origin is in the list of allowed domains
-    if (allowedDomains.includes(origin)) {
+    console.log(origin, "origin");
+
+    // Check if the request is a GET request and the origin is not provided
+    if (req.method === 'GET' && !origin) {
+        // Allow the request without CORS validation
+        console.log('Header==>\n\n', req.header, '\n\n Headers \n\n', req.headers)
+        next();
+    } else if (origin && allowedDomains.includes(origin)) {
         // Set the Access-Control-Allow-Origin header to allow requests from the origin
         res.setHeader('Access-Control-Allow-Origin', origin);
         // Set other CORS headers as needed
@@ -45,10 +51,11 @@ app.use((req, res, next) => {
         // Continue processing the request
         next();
     } else {
-        // Return an error response if the origin is not allowed
+        // Return an error response if the origin is not allowed or if it's undefined for non-GET requests
         return res.status(403).json({ error: 'Forbidden: Origin not allowed 😒' });
     }
 });
+
 
 // Parse cookies and JSON bodies
 app.use(cookieParser());
