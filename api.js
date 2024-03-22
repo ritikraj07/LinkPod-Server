@@ -29,7 +29,7 @@ app.use((req, res, next) => {
     const allowedDomains = ['https://linkpod.onrender.com',
         'https://extinct-duck-cap.cyclic.app']; // List of allowed domains
 
-    const origin = req.headers.origin; // Get the origin from the request headers
+    const origin = req.headers.origin || req.headers.host ; // Get the origin from the request headers
     console.log(origin, "origin")
     // Check if the origin is in the list of allowed domains
     if (allowedDomains.includes(origin)) {
