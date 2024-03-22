@@ -62,9 +62,10 @@ app.use('/api/pod', PodRouter);
 app.use('/api/post', PostRouter);
 
 // Connect to the database and start the server
+let PORT = process.env.PORT || 8000;
 ConnectDatabase()
     .then(() => {
-        app.listen(8000);
-        console.log('Server Started at 8000');
+        app.listen(PORT);
+        console.log('Server Started at '+PORT);
     })
     .catch((error) => console.log('Error==>', error));
