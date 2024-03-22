@@ -27,7 +27,7 @@ app.use(require('express-status-monitor')())
 // Configure headers for CORS
 app.use((req, res, next) => {
     const allowedDomains = ['https://linkpod.onrender.com',
-        'https://extinct-duck-cap.cyclic.app']; // List of allowed domains
+        'https://extinct-duck-cap.cyclic.app', 'extinct-duck-cap.cyclic.app', 'linkpod.onrender.com']; // List of allowed domains
 
     const origin = req.headers.origin || req.headers.host ; // Get the origin from the request headers
     console.log(origin, "origin")
