@@ -61,7 +61,6 @@ const CheckPostCredentials = async (req, res, next) => {
         }
         let post_url = req.body.post_url
         let post_urn = extractIdFromLinkedInUrl(post_url)
-        console.log(post_urn)
         if (!post_urn) {
             return res.send({
                 status: false,

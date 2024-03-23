@@ -14,15 +14,14 @@ const CheckIsPostExist = async (urn) => {
 }
 
 
-const CreatePost = async ({post_url, title, urn, created_by, pod_id, avgTime = "6000:10000", user, comments }) => {
+const CreatePost = async ({ post_url, title, urn, created_by, pod_id, avgTime = "6000:10000", user, comments }) => {
     try {
-        console.log("Create Post", post_url, title, urn, created_by, pod_id, avgTime, user, comments)
         let response = await AddCommentToPost({
             postURN: urn,
             accessToken: user.linkedIn_access_token,
             userURN: user.userURN, comment: "#cfbr"
         });
-        
+
 
         if (!response.status) {
             // Check if response data contains the expected error message
@@ -36,9 +35,14 @@ const CreatePost = async ({post_url, title, urn, created_by, pod_id, avgTime = "
                 urn = actualUrn;
                 // Re-check if the post exists with the swapped urn
 
-            }
+
+            } else {
             return response;
+                
+            }
+
         }
+
 
         if (await CheckIsPostExist(urn)) {
             // Post now exists with the correct urn
@@ -101,7 +105,7 @@ async function ManagePost({ urn, pod_id, avgTime, created_by, comments }) {
             .sort({ reactions: 1 })
             .limit(20)
             .lean();
-        
+
 
         // Add reactions and comments to the post
         ReadyForReactionAndComment({ urn, users, avgTime, comments });
@@ -179,10 +183,10 @@ async function SearchForPost(query, created_by) {
         let posts = await Post.find({
             created_by: created_by,
             $or: [{ title: { $regex: query, $options: "i" } },
-                { urn: { $regex: query, $options: "i" } },
-                { post_url: { $regex: query, $options: "i" } }]
+            { urn: { $regex: query, $options: "i" } },
+            { post_url: { $regex: query, $options: "i" } }]
         })
-        if(posts.length == 0){
+        if (posts.length == 0) {
             return {
                 status: false,
                 message: "No post found",
