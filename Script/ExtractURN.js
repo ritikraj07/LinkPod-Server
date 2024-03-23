@@ -1,1 +1,38 @@
-const _0x14a173 = _0x12be; function _0x11c5() { const _0x154e7d = ['5849885uCToVB', '6610940bVmLAH', '2EKuisA', 'exports', 'gtPnQ', '1567285UGLkNk', '176YnEwSj', '6578880mzdffA', 'match', '7420464EYgrPV', '204147XVzNAM', 'length', '1728369mKKcuf']; _0x11c5 = function () { return _0x154e7d; }; return _0x11c5(); } function _0x12be(_0x421e9e, _0x46b44c) { const _0xa80a3 = _0x11c5(); return _0x12be = function (_0x316cd1, _0x5bb8a8) { _0x316cd1 = _0x316cd1 - (-0x1a20 + 0x152c + 0x2 * 0x337); let _0x435f94 = _0xa80a3[_0x316cd1]; return _0x435f94; }, _0x12be(_0x421e9e, _0x46b44c); } (function (_0x5c36bb, _0x5284ad) { const _0x2c073a = _0x12be, _0x5bd2cd = _0x5c36bb(); while (!![]) { try { const _0x1e622d = parseInt(_0x2c073a(0x17d)) / (0x221b + 0x90a + -0x2b24) + parseInt(_0x2c073a(0x17a)) / (0x1875 + 0xe0d + 0x1 * -0x2680) * (parseInt(_0x2c073a(0x184)) / (0x1d30 + 0xda + -0x1e07)) + -parseInt(_0x2c073a(0x186)) / (-0x67 * 0x61 + 0x121 * -0x1f + 0x4a0a) + parseInt(_0x2c073a(0x185)) / (0x88a * 0x1 + 0x1744 + -0x1fc9) + -parseInt(_0x2c073a(0x181)) / (0x1b9d + -0xa9d + -0x87d * 0x2) + parseInt(_0x2c073a(0x17f)) / (0x1205 + -0x677 * -0x6 + 0x719 * -0x8) + -parseInt(_0x2c073a(0x17e)) / (-0x7f9 + 0x3 * -0xb7b + 0x2a72) * (parseInt(_0x2c073a(0x182)) / (0x5 * 0x5c3 + -0x246 * 0x3 + 0x119 * -0x14)); if (_0x1e622d === _0x5284ad) break; else _0x5bd2cd['push'](_0x5bd2cd['shift']()); } catch (_0x11818d) { _0x5bd2cd['push'](_0x5bd2cd['shift']()); } } }(_0x11c5, 0x68cd7 * 0x1 + -0x1a327 * -0xd + -0x9 * 0x1a072)); function extractIdFromLinkedInUrl(_0x1b6019) { const _0x1149d5 = _0x12be, _0x53aab3 = {}; _0x53aab3[_0x1149d5(0x17c)] = function (_0x385cdb, _0x30f7b7) { return _0x385cdb != _0x30f7b7; }; const _0x25b1dd = _0x53aab3; let _0x1c30d1 = /-([\d]+)-/, _0x22221a = _0x1b6019[_0x1149d5(0x180)](_0x1c30d1); return _0x22221a && _0x25b1dd[_0x1149d5(0x17c)](_0x22221a[-0x1be7 + -0xfdf + 0x2bc7 * 0x1]?.[_0x1149d5(0x183)], 0x6d + 0xf16 + -0x8 * 0x1ee) && (_0x1c30d1 = /activity-(\d+)-/, _0x22221a = _0x1b6019[_0x1149d5(0x180)](_0x1c30d1)), _0x22221a ? _0x22221a[-0x1e5a + -0x2199 + 0x3ff4] : null; } module[_0x14a173(0x17b)] = extractIdFromLinkedInUrl;
+function extractIdFromLinkedInUrl(url) {
+    // Regular expression pattern to match the ID in the URL
+    let pattern = /-([\d]+)-/;
+
+    // Match the pattern in the URL
+    let match = url.match(pattern);
+    if (match && match[1]?.length != 19) {
+        pattern = /activity-(\d+)-/;
+
+        // Match the pattern in the URL
+        match = url.match(pattern);
+    }
+
+    if (match == null || match[1]?.length != 19) {
+        pattern = /activity:(\d+)/;
+
+        // Match the pattern in the URL
+        match = url.match(pattern);
+    }
+
+    if (match == null || match[1]?.length != 19) {
+        let id = '';
+
+        for (let i = 0; i < url.length; i++) {
+            // Check if the character is a digit and append it to id
+            if (!isNaN(parseInt(url[i], 10))) {
+                id += url[i];
+            } else if (id.length != 19) {
+                id = ''; // Reset id if the character is not a digit and id length is not 19
+            }
+        }
+
+        match = [null, id]; // Assign id to match to maintain consistency with previous matches
+    }
+
+    // Check if there's a match and return the ID, or return null if no match found
+    return match ? match[1] : null;
+}
