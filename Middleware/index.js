@@ -55,7 +55,7 @@ const CheckPostCredentials = async (req, res, next) => {
         if (no_of_left <= 0) {
             return res.send({
                 status: false,
-                message: 'You have no post left for this monthes! 😒',
+                message: 'You have no post left for this monthes!',
                 data: null
             })
         }

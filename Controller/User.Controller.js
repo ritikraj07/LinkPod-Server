@@ -28,7 +28,7 @@ const CreateUser = async ({
             return {
                 status: false,
                 data: null,
-                message: 'Already have account 🎉'
+                message: 'Already have account'
             }
 
         }
@@ -50,7 +50,7 @@ const CreateUser = async ({
         return {
             status: true,
             data: userData,
-            message: 'Account created 🎉'
+            message: 'Account created'
         };
     } catch (error) {
         return {
@@ -77,7 +77,7 @@ const LoginUser = async ({ email, password }) => {
             return {
                 status: false,
                 data: null,
-                message: 'No User Found! 😒'
+                message: 'No User Found!'
             };
         }
 
@@ -86,7 +86,7 @@ const LoginUser = async ({ email, password }) => {
             return {
                 status: false,
                 data: null,
-                message: 'User password is missing. Please contact support. 😒'
+                message: 'User password is missing. Please contact support.'
             };
         }
 
@@ -98,7 +98,7 @@ const LoginUser = async ({ email, password }) => {
             return {
                 status: false,
                 data: null,
-                message: 'Password Not Match! 😒'
+                message: 'Password Not Match!'
             };
         }
 
@@ -265,7 +265,7 @@ const ForgotPassword = async ({ email }) => {
         if (!user) {
             return {
                 status: false,
-                message: 'No user exists 😒',
+                message: 'No user exists',
                 data: null
             }
         }
@@ -342,7 +342,7 @@ const ChangePassword = async ({ email, new_password }) => {
             
             return {
                 status: false,
-                message: 'No user exists 😒',
+                message: 'No user exists',
                 data: null
             }
 

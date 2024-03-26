@@ -58,7 +58,7 @@ const CreatePost = async ({ post_url, title, urn, created_by, pod_id, avgTime = 
 
         return {
             status: true,
-            message: 'Post added successfully 🎉',
+            message: 'Post added successfully',
             data: null
         };
     } catch (error) {

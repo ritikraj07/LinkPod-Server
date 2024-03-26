@@ -62,7 +62,7 @@ function StartReactionAndComment({ postObj }) {
         if (post.comment) {
             AddCommentToPost(post).then((res) => { MaintainPostData(null, res, post.postURN) });
         }
-        console.log("Reaction and Comment added successfully 🎉");
+        console.log("Reaction and Comment added successfully");
         // }, 15000);
     }
 
