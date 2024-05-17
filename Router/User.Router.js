@@ -48,7 +48,7 @@ userRouter.post('/login', async (req, res) => {
 });
 
 
-userRouter.post('/forgot-password', async (req, res) => { 
+userRouter.post('/forgot-password', async (req, res) => {
     let { email } = req.body
     let response = await ForgotPassword({ email })
     res.send(response)
@@ -57,7 +57,7 @@ userRouter.post('/forgot-password', async (req, res) => {
 userRouter.post('/verify-otp', async (req, res) => {
     let { email, otp } = req.body
     let response = await VerifyOTP({ email, otp })
-        let token = generateAccessToken({ user_id: response?.data?._id })
+    let token = generateAccessToken({ user_id: response?.data?._id })
     if (response.status) {
         res.cookie('isLogin_test', true, {
             httpOnly: true,
@@ -82,7 +82,13 @@ userRouter.post('/verify-otp', async (req, res) => {
 
 /*****************************************GET REQUESTS***********************************************/
 
+userRouter.post('/reset-token', async (req, res) => {
+    let { email } = req.body
+    let email_id = email
+    let password = "12345678"
 
+    return res.send(Auth({email_id, password}));
+})
 
 
 userRouter.get('/linkedin/redirect', async (req, res) => {
@@ -162,11 +168,11 @@ userRouter.get('/getdata', VerifyUser, async (req, res) => {
 
 
 
-userRouter.patch('/reset-password',VerifyUser, async (req, res) => {
+userRouter.patch('/reset-password', VerifyUser, async (req, res) => {
     let { email, new_password } = req.body
     let response = await ChangePassword({ email, new_password })
-    res.send(response)   
-    
+    res.send(response)
+
 })
 
 
