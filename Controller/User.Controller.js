@@ -16,7 +16,7 @@ const CreateUser = async ({
         // Check if the email already exists
         const existingUser = await User.findOne({ email: email_id });
         // console.log(existingUser, '====<<<<<<<<<<')
-        const hashedPassword = await bcrypt.hash(password, 10);
+        
         if (existingUser) {
             let user = await User.updateOne({ email: email_id }, {
                 email: email_id, password: hashedPassword,
@@ -26,13 +26,14 @@ const CreateUser = async ({
             })
 
             return {
-                status: false,
-                data: null,
+                status: true,
+                data: user,
                 message: 'Already have account'
             }
 
         }
 
+        const hashedPassword = await bcrypt.hash(password, 10);
         // Hash the password
 
         // Create user with hashed password
@@ -60,7 +61,6 @@ const CreateUser = async ({
         };
     }
 };
-
 
 
 
@@ -139,6 +139,7 @@ const GetUserById = async (id) => {
             email: 1,
             picture: 1,
             linkedIn_email: 1,
+            linkedIn_access_token_expires_in:1
         }).exec();
 
 
@@ -368,7 +369,7 @@ const ChangePassword = async ({ email, new_password }) => {
 
 module.exports = {
     CreateUser, LoginUser,
-    GetUserById, ResetPassword,
+    GetUserById, ResetPassword, ResetLinkedToken,
     ForgotPassword, VerifyOTP, ChangePassword
 };
 
