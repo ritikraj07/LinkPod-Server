@@ -369,7 +369,7 @@ const ChangePassword = async ({ email, new_password }) => {
 
 module.exports = {
     CreateUser, LoginUser,
-    GetUserById, ResetPassword, ResetLinkedToken,
+    GetUserById, ResetPassword,
     ForgotPassword, VerifyOTP, ChangePassword
 };
 
