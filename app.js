@@ -65,7 +65,7 @@ app.use(express.json());
 app.use(morgan('tiny'));
 
 // Serve static files
-app.use(express.static('Static'));
+// app.use(express.static('Static'));
 
 // Define routes
 app.get('/', (req, res) => {
@@ -75,9 +75,9 @@ app.get('/', (req, res) => {
     </div>`);
 });
 
-app.get('/docs', (req, res) => {
-    res.sendFile('index.html', { root: 'Static' });
-});
+// app.get('/docs', (req, res) => {
+//     res.sendFile('index.html', { root: 'Static' });
+// });
 
 // Define API routes
 app.use('/api/user', userRouter);
