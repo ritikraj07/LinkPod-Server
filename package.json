@@ -4,7 +4,6 @@
   "description": "Extension for linkedIn, help user to make post, comment, like",
   "main": "app.js",
   "scripts": {
-    "test": "test.js",
     "start": "node app.js",
     "dev": "nodemon -r dotenv/config app.js"
   },
