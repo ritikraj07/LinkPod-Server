@@ -2,10 +2,10 @@
   "name": "linkpod-server",
   "version": "1.0.0",
   "description": "Extension for linkedIn, help user to make post, comment, like",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node app.js",
-    "dev": "nodemon -r dotenv/config app.js"
+    "start": "node index.js",
+    "dev": "nodemon -r dotenv/config index.js"
   },
   "repository": {
     "type": "git",
