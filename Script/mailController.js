@@ -24,4 +24,26 @@ const SendOTPforPasswordReset = async ({ user, otp }) => {
     }
 };
 
-module.exports = { SendOTPforPasswordReset };
+
+const SendWelcomeEmail = async ({ user }) => {
+    console.log('log from SendWelcomeEmail', user.email);
+    try {
+        const mail = new Mail();
+        mail.setTo(user.email);
+        mail.setSubject('Welcome to LinkPod!');
+
+        const filePath = path.resolve(__dirname, '../Script/Template/welcomeEmail.html');
+        const html = fs.readFileSync(filePath, 'utf8');
+
+        const updatedHtml = html.replace('<span id="user_name"></span>', user.name);
+
+        mail.setHTML(updatedHtml);
+        await mail.send(); // Wait for the email to be sent before proceeding
+        console.log('Welcome email sent successfully');
+    } catch (error) {
+        console.log('Error from SendWelcomeEmail:', error);
+        throw error; // Re-throw the error for the caller to handle
+    }
+};
+
+module.exports = { SendOTPforPasswordReset, SendWelcomeEmail };

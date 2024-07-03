@@ -75,9 +75,7 @@ app.get('/', (req, res) => {
     </div>`);
 });
 
-// app.get('/docs', (req, res) => {
-//     res.sendFile('index.html', { root: 'Static' });
-// });
+
 
 // Define API routes
 app.use('/api/user', userRouter);
