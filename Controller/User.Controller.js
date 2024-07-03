@@ -41,7 +41,7 @@ const CreateUser = async ({
             email: email_id, password: hashedPassword,
             name, userURN: sub, picture, linkedIn_access_token: access_token,
             linkedIn_access_token_expires_in: expires_in,
-            linkedIn_email: email,
+            linkedIn_email: email, 
 
         });
         SendWelcomeEmail({ user: user });
@@ -140,7 +140,7 @@ const GetUserById = async (id) => {
             email: 1,
             picture: 1,
             linkedIn_email: 1,
-            linkedIn_access_token_expires_in: 1
+            linkedInAccessTokenExpireDate:1
         }).exec();
 
 

@@ -21,40 +21,11 @@ const corsOptions = {
     // Add the following line to include the required headers for CORS
     optionSuccessStatus: 200,
 };
+
+
 app.use(cors());
 app.set('trust proxy', true);
 app.use(require('express-status-monitor')())
-// Configure headers for CORS
-// app.use((req, res, next) => {
-//     const allowedDomains = [
-//         'https://linkpod.onrender.com',
-//         'https://extinct-duck-cap.cyclic.app',
-//         'https://www.linkedin.com'
-//     ];
-
-//     const origin = req.headers.origin; // Get the origin from the request headers
-//     console.log(origin, "origin");
-
-//     // Check if the request is a GET request and the origin is not provided
-//     if (req.method === 'GET' && !origin) {
-//         // Allow the request without CORS validation
-//         console.log('Header==>\n\n', req.header, '\n\n Headers \n\n', req.headers)
-//         next();
-//     } else if (origin && allowedDomains.includes(origin)) {
-//         // Set the Access-Control-Allow-Origin header to allow requests from the origin
-//         res.setHeader('Access-Control-Allow-Origin', origin);
-//         // Set other CORS headers as needed
-//         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-//         res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
-//         res.setHeader('Access-Control-Allow-Credentials', 'true');
-
-//         // Continue processing the request
-//         next();
-//     } else {
-//         // Return an error response if the origin is not allowed or if it's undefined for non-GET requests
-//         return res.status(403).json({ error: 'Forbidden: Origin not allowed 😒' });
-//     }
-// });
 
 
 // Parse cookies and JSON bodies
@@ -90,3 +61,48 @@ ConnectDatabase()
         console.log('Server Started at ' + PORT);
     })
     .catch((error) => console.log('Error==>', error));
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Configure headers for CORS
+// app.use((req, res, next) => {
+//     const allowedDomains = [
+//         'https://linkpod.onrender.com',
+//         'https://extinct-duck-cap.cyclic.app',
+//         'https://www.linkedin.com'
+//         'https://linkpod.ritik.online
+//     ];
+
+//     const origin = req.headers.origin; // Get the origin from the request headers
+//     console.log(origin, "origin");
+
+//     // Check if the request is a GET request and the origin is not provided
+//     if (req.method === 'GET' && !origin) {
+//         // Allow the request without CORS validation
+//         console.log('Header==>\n\n', req.header, '\n\n Headers \n\n', req.headers)
+//         next();
+//     } else if (origin && allowedDomains.includes(origin)) {
+//         // Set the Access-Control-Allow-Origin header to allow requests from the origin
+//         res.setHeader('Access-Control-Allow-Origin', origin);
+//         // Set other CORS headers as needed
+//         res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+//         res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+//         res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+//         // Continue processing the request
+//         next();
+//     } else {
+//         // Return an error response if the origin is not allowed or if it's undefined for non-GET requests
+//         return res.status(403).json({ error: 'Forbidden: Origin not allowed 😒' });
+//     }
+// });
