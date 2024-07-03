@@ -32,7 +32,7 @@ const SendWelcomeEmail = async ({ user }) => {
         mail.setTo(user.email);
         mail.setSubject('Welcome to LinkPod!');
 
-        const filePath = path.resolve(__dirname, '../Script/Template/welcomeEmail.html');
+        const filePath = path.resolve(__dirname, '../Script/Template/welcome.html');
         const html = fs.readFileSync(filePath, 'utf8');
 
         const updatedHtml = html.replace('<span id="user_name"></span>', user.name);
