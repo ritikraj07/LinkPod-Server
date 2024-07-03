@@ -42,7 +42,7 @@ userRouter.post('/login', async (req, res) => {
         expires: new Date(Date.now() + 3600000),
         secure: true, // Change to true
         sameSite: "none",
-        domain: "https://linkpod.onrender.com",
+        domain: process.env.FRONTEND_URL,
     });
     res.send({ ...response, token, isLogin: true });
 });
@@ -64,7 +64,7 @@ userRouter.post('/verify-otp', async (req, res) => {
             expires: new Date(Date.now() + 3600000),
             secure: true, // Change to true
             sameSite: "none",
-            domain: "https://linkpod.onrender.com",
+            domain: process.env.FRONTEND_URL,
         })
 
         res.cookie('token', token, {

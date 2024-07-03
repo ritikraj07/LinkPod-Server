@@ -3,7 +3,7 @@ const User = require("../Model/User.Model");
 const Pod = require('../Model/Pod.Model');
 const { GetAllPostByUser } = require('./Post.Controller');
 const { GenerateOTP } = require('../Script/RandomOTP');
-const { SendOTPforPasswordReset } = require('../Script/mailController');
+const { SendOTPforPasswordReset, SendWelcomeEmail } = require('../Script/mailController');
 
 const emailMatchedWithOTP = {}
 
@@ -16,7 +16,7 @@ const CreateUser = async ({
         // Check if the email already exists
         const existingUser = await User.findOne({ email: email_id });
         // console.log(existingUser, '====<<<<<<<<<<')
-        
+
         if (existingUser) {
             let user = await User.updateOne({ email: email_id }, {
                 email: email_id, password: hashedPassword,
@@ -44,6 +44,7 @@ const CreateUser = async ({
             linkedIn_email: email,
 
         });
+        SendWelcomeEmail({ user: user });
 
         // Remove the hashed password from the returned user object
         const { password: _, ...userData } = user.toObject();
@@ -139,7 +140,7 @@ const GetUserById = async (id) => {
             email: 1,
             picture: 1,
             linkedIn_email: 1,
-            linkedIn_access_token_expires_in:1
+            linkedIn_access_token_expires_in: 1
         }).exec();
 
 
@@ -306,7 +307,7 @@ const VerifyOTP = async ({ email, otp }) => {
                     name: user.name,
                     picture: user.picture,
                     linkedIn_email: user.linkedIn_email,
-                    
+
                 }
             }
         } else if (emailMatchedWithOTP[email] === undefined) {
@@ -315,9 +316,9 @@ const VerifyOTP = async ({ email, otp }) => {
                 message: 'otp is not sent to this email',
                 data: null
             }
-            
+
         }
-        
+
         else {
             return {
                 status: false,
@@ -340,7 +341,7 @@ const ChangePassword = async ({ email, new_password }) => {
     try {
         let user = await User.findOne({ email });
         if (!user) {
-            
+
             return {
                 status: false,
                 message: 'No user exists',
@@ -357,7 +358,7 @@ const ChangePassword = async ({ email, new_password }) => {
             data: user
         }
 
-     } catch (error) {
+    } catch (error) {
         return {
             status: false,
             message: 'Server Error!',
